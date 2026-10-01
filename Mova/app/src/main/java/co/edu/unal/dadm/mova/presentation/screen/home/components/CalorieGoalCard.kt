@@ -1,0 +1,3 @@
+package co.edu.unal.dadm.mova.presentation.screen.home.components
+
+// TODO: Componente del Home: CalorieGoalCard (SleepCard sin mockup, ver plan §8)
