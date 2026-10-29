@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import co.edu.unal.dadm.mova.presentation.navigation.MovaNavHost
+import co.edu.unal.dadm.mova.data.repository.AuthRepositoryImpl
 import co.edu.unal.dadm.mova.ui.theme.MovaTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MovaTheme {
-                MovaNavHost()
+                MovaNavHost(authRepository = AuthRepositoryImpl())
             }
         }
     }

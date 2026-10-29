@@ -1,11 +1,10 @@
 package co.edu.unal.dadm.mova.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import co.edu.unal.dadm.mova.data.repository.AuthRepositoryImpl
+import co.edu.unal.dadm.mova.domain.repository.AuthRepository
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetPasswordScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetSentScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignInScreen
@@ -14,9 +13,8 @@ import co.edu.unal.dadm.mova.presentation.screen.auth.WelcomeScreen
 import co.edu.unal.dadm.mova.presentation.screen.onboarding.IntroPagerScreen
 
 @Composable
-fun MovaNavHost() {
+fun MovaNavHost(authRepository: AuthRepository) {
     val navController = rememberNavController()
-    val authRepository = remember { AuthRepositoryImpl() }
     NavHost(navController = navController, startDestination = Routes.Welcome) {
         composable(Routes.Welcome) {
             WelcomeScreen(
