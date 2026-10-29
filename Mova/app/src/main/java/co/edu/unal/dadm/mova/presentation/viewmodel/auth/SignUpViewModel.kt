@@ -20,6 +20,26 @@ class SignUpViewModel(private val signUpUseCase: SignUpUseCase) : ViewModel() {
     fun passwordChanged(value: String) { _uiState.value = _uiState.value.copy(password = value, error = null) }
     fun confirmationChanged(value: String) { _uiState.value = _uiState.value.copy(confirmation = value, error = null) }
 
+    fun googleSignIn(idToken: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = when (val result = signUpUseCase.withGoogle(idToken)) {
+                is Result.Success -> _uiState.value.copy(isLoading = false, completed = true)
+                is Result.Error -> _uiState.value.copy(isLoading = false, error = result.message)
+                Result.Loading -> _uiState.value
+            }
+        }
+
+    }
+
+    fun googleSignInCancelled() {
+        _uiState.value = _uiState.value.copy(error = "Google sign-in cancelled")
+    }
+
+    fun googleSignInError(message: String) {
+        _uiState.value = _uiState.value.copy(isLoading = false, error = message)
+    }
+
     fun signUp() {
         val state = _uiState.value
         val validationError = validateEmail(state.email)

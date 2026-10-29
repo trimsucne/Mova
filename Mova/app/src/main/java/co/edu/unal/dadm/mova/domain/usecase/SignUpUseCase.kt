@@ -7,4 +7,7 @@ import co.edu.unal.dadm.mova.domain.repository.AuthRepository
 class SignUpUseCase(private val repository: AuthRepository) {
     suspend operator fun invoke(email: String, password: String): Result<AuthUser> =
         repository.signUp(email.trim(), password)
+
+    suspend fun withGoogle(idToken: String): Result<AuthUser> =
+        repository.signInWithGoogle(idToken)
 }
