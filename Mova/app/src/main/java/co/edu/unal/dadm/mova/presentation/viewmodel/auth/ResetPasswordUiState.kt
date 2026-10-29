@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.auth
 
-// TODO: data class de estado inmutable: Reset Password (metodo, envio, reenvio con temporizador)
+data class ResetPasswordUiState(
+    val email: String = "",
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val sent: Boolean = false
+)
