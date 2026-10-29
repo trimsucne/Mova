@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import co.edu.unal.dadm.mova.core.common.Result
 import co.edu.unal.dadm.mova.core.common.validateEmail
 import co.edu.unal.dadm.mova.core.common.validatePassword
-import co.edu.unal.dadm.mova.domain.repository.AuthRepository
+import co.edu.unal.dadm.mova.domain.usecase.SignInUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val repository: AuthRepository) : ViewModel() {
+class SignInViewModel(private val signInUseCase: SignInUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(SignInUiState())
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
 
@@ -27,7 +27,7 @@ class SignInViewModel(private val repository: AuthRepository) : ViewModel() {
         }
         viewModelScope.launch {
             _uiState.value = state.copy(isLoading = true, error = null)
-            _uiState.value = when (val result = repository.signIn(state.email, state.password)) {
+            _uiState.value = when (val result = signInUseCase(state.email, state.password)) {
                 is Result.Success -> _uiState.value.copy(isLoading = false, completed = true)
                 is Result.Error -> _uiState.value.copy(isLoading = false, error = result.message)
                 Result.Loading -> _uiState.value

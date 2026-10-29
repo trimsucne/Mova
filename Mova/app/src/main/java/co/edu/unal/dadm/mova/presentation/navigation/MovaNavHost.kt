@@ -11,7 +11,7 @@ import co.edu.unal.dadm.mova.presentation.screen.auth.ResetSentScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignInScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignUpScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.WelcomeScreen
-import co.edu.unal.dadm.mova.presentation.screen.onboarding.OnboardingPlaceholderScreen
+import co.edu.unal.dadm.mova.presentation.screen.onboarding.IntroPagerScreen
 
 @Composable
 fun MovaNavHost() {
@@ -56,10 +56,10 @@ fun MovaNavHost() {
             })
         }
         composable(Routes.Onboarding) {
-            OnboardingPlaceholderScreen(onFinished = { navController.navigate(Routes.Main) })
+            IntroPagerScreen(onFinished = { navController.navigate(Routes.Main) })
         }
         composable(Routes.Main) {
-            OnboardingPlaceholderScreen(onFinished = {})
+            IntroPagerScreen(onFinished = {})
         }
     }
 }
