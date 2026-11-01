@@ -15,6 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import co.edu.unal.dadm.mova.presentation.viewmodel.onboarding.IntroPagerViewModel
 
 private val introPages = listOf(
     "Move with a plan" to "Build flexible routines around your real day.",
@@ -24,7 +27,9 @@ private val introPages = listOf(
 
 @Composable
 fun IntroPagerScreen(onFinished: () -> Unit) {
-    var page by remember { mutableIntStateOf(0) }
+    val viewModel: IntroPagerViewModel = viewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val page = state.page
     val (title, body) = introPages[page]
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -32,14 +37,14 @@ fun IntroPagerScreen(onFinished: () -> Unit) {
     ) {
         Text("MOVA")
         LinearProgressIndicator(
-            progress = { (page + 1).toFloat() / introPages.size },
+            progress = { (page + 1).toFloat() / state.pageCount },
             modifier = Modifier.fillMaxWidth()
         )
         Text(title)
         Text(body)
         Button(
             onClick = {
-                if (page == introPages.lastIndex) onFinished() else page++
+                if (state.isLastPage) onFinished() else viewModel.next()
             },
             modifier = Modifier.fillMaxWidth()
         ) {

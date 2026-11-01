@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import co.edu.unal.dadm.mova.domain.repository.AuthRepository
 import co.edu.unal.dadm.mova.domain.repository.AssessmentRepository
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetPasswordScreen
+import co.edu.unal.dadm.mova.presentation.screen.auth.ResetMethodScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetSentScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignInScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignUpScreen
@@ -29,8 +30,15 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
                 repository = authRepository,
                 onBack = { navController.popBackStack() },
                 onSignUp = { navController.navigate(Routes.SignUp) },
-                onForgotPassword = { navController.navigate(Routes.ResetPassword) },
+                onForgotPassword = { navController.navigate(Routes.ResetMethod) },
                 onAuthenticated = { navController.navigate(Routes.Onboarding) { popUpTo(Routes.SignIn) { inclusive = true } } }
+            )
+        }
+        composable(Routes.ResetMethod) {
+            ResetMethodScreen(
+                onEmailSelected = { navController.navigate(Routes.ResetPassword) },
+                onGoogleSelected = { navController.navigate(Routes.ResetPassword) },
+                onBack = { navController.popBackStack() }
             )
         }
         composable(Routes.SignUp) {
