@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio Gender (data class / enum, Kotlin puro)
+enum class Gender {
+    MALE,
+    FEMALE,
+    PREFER_NOT_TO_SAY
+}

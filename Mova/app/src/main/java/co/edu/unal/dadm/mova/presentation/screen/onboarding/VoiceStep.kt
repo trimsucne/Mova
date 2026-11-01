@@ -1,3 +1,15 @@
 package co.edu.unal.dadm.mova.presentation.screen.onboarding
 
-// TODO: Analisis vocal IA, omitible (CFA 5) (Route + Screen stateless, @Preview claro/oscuro)
+import androidx.compose.runtime.Composable
+
+@Composable
+fun VoiceStep(onContinue: () -> Unit) {
+    AssessmentStep(
+        6,
+        "AI Vocal Analysis",
+        "Voice analysis is optional. Continue without recording for now.",
+        true,
+        onContinue,
+        progressLabel = "Optional setup"
+    ) {}
+}

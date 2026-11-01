@@ -7,5 +7,6 @@ object Routes {
     const val ResetPassword = "reset_password"
     const val ResetSent = "reset_sent"
     const val Onboarding = "onboarding"
+    const val Assessment = "assessment"
     const val Main = "main"
 }

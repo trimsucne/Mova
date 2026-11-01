@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio Goal (data class / enum, Kotlin puro)
+enum class Goal {
+    LOSE_WEIGHT,
+    AI_COACH,
+    GAIN_MUSCLE,
+    IMPROVE_ENDURANCE,
+    EXPLORE
+}
