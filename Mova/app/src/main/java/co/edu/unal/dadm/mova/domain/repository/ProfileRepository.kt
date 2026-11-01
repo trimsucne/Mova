@@ -7,5 +7,5 @@ import android.net.Uri
 interface ProfileRepository {
     fun observe(userId: String): Flow<UserProfile?>
     suspend fun update(userId: String, changes: Map<String, Any?>)
-    suspend fun uploadAvatar(userId: String, uri: Uri, contentType: String): String
+    suspend fun saveAvatar(uri: Uri, contentType: String): String
 }

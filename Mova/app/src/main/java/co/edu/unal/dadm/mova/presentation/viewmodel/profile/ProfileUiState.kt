@@ -6,5 +6,6 @@ data class ProfileUiState(
     val profile: UserProfile? = null,
     val loading: Boolean = true,
     val error: String? = null,
-    val uploadingAvatar: Boolean = false
+    val uploadingAvatar: Boolean = false,
+    val avatarPath: String? = null
 )

@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.stateIn
 import android.net.Uri
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -16,9 +18,25 @@ class ProfileViewModel(
     private val userId: String
 ) : ViewModel() {
     private val uploading = MutableStateFlow(false)
+    private val avatarPath = MutableStateFlow<String?>(null)
+    private val error = MutableStateFlow<String?>(null)
     val state = repository.observe(userId)
+        .catch {
+            error.value = "Profile unavailable. Check your connection."
+            emit(null)
+        }
+        .onStart { emit(null) }
         .combine(uploading) { profile, isUploading ->
-            ProfileUiState(profile = profile, loading = false, uploadingAvatar = isUploading)
+            Triple(profile, isUploading, avatarPath.value)
+        }
+        .combine(error) { (profile, isUploading, localAvatar), message ->
+            ProfileUiState(
+                profile = profile,
+                loading = false,
+                error = message,
+                uploadingAvatar = isUploading,
+                avatarPath = localAvatar
+            )
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ProfileUiState())
 
@@ -26,10 +44,18 @@ class ProfileViewModel(
         viewModelScope.launch {
             uploading.value = true
             try {
-                repository.uploadAvatar(userId, uri, contentType)
+                avatarPath.value = repository.saveAvatar(uri, contentType)
+                error.value = null
+            } catch (_: Exception) {
+                error.value = "Avatar could not be saved locally."
             } finally {
                 uploading.value = false
             }
         }
+
+    }
+
+    fun reportError(message: String) {
+        error.value = message
     }
 }

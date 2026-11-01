@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: AssessmentRepository) {
     val navController = rememberNavController()
     val context = LocalContext.current
-    val profileRepository = ProfileRepositoryImpl()
+    val profileRepository = ProfileRepositoryImpl(context)
     val preferencesRepository = UserPreferencesImpl(context)
     NavHost(navController = navController, startDestination = Routes.Welcome) {
         composable(Routes.Welcome) {

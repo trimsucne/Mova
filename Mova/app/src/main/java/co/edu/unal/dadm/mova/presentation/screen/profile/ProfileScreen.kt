@@ -10,10 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import android.content.Context
-import android.net.Uri
 import co.edu.unal.dadm.mova.domain.model.PremiumFeature
 import co.edu.unal.dadm.mova.domain.model.PremiumTier
 import co.edu.unal.dadm.mova.domain.model.allows
@@ -48,6 +45,8 @@ fun ProfileScreen(
                 size != null && size in 1L..5_242_880L
             ) {
                 profileViewModel.uploadAvatar(uri, type)
+            } else {
+                profileViewModel.reportError("Choose JPG or PNG image up to 5 MB.")
             }
         }
     }
@@ -60,7 +59,7 @@ fun ProfileScreen(
         state.profile?.let { profile ->
             Text(profile.displayName.ifBlank { profile.email })
             Text(if (profile.isPremium) "Premium" else "Basic")
-            Text(if (profile.avatarUrl == null) "No avatar uploaded" else "Avatar uploaded")
+            Text(if (state.avatarPath == null) "No avatar uploaded" else "Avatar saved on device")
             Text("Uplift Score: ${profile.upliftScore}")
             Text("Age: ${profile.age ?: "-"}")
             Text("Weight: ${profile.weightKg?.let { "$it kg" } ?: "-"}")
