@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.auth
 
-// TODO: sealed interface de eventos de usuario: Sign In (email, password, errores)
+sealed interface SignInEvent {
+    data class EmailChanged(val value: String) : SignInEvent
+    data class PasswordChanged(val value: String) : SignInEvent
+    data object Submit : SignInEvent
+    data class GoogleTokenReceived(val token: String) : SignInEvent
+}

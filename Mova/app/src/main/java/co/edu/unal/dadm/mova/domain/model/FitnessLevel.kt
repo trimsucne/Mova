@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio FitnessLevel (data class / enum, Kotlin puro)
+enum class FitnessLevel(val value: Int) {
+    BEGINNER(1),
+    NOVICE(2),
+    INTERMEDIATE(3),
+    ADVANCED(4),
+    ATHLETE(5)
+}
