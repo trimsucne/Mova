@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.profile
 
-// TODO: data class de estado inmutable: Account Settings (CFA 15): dark mode, unidades, notificaciones
+import co.edu.unal.dadm.mova.domain.repository.UserPreferences
+
+data class AccountSettingsUiState(
+    val preferences: UserPreferences = UserPreferences(),
+    val error: String? = null
+)

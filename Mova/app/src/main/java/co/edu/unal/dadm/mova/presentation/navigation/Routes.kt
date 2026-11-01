@@ -10,4 +10,6 @@ object Routes {
     const val Onboarding = "onboarding"
     const val Assessment = "assessment"
     const val Main = "main"
+    const val Profile = "profile"
+    const val Settings = "settings"
 }

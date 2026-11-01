@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.profile
 
-// TODO: data class de estado inmutable: Perfil: avatar, Uplift Score semanal (CFA 11)
+import co.edu.unal.dadm.mova.domain.model.UserProfile
+
+data class ProfileUiState(
+    val profile: UserProfile? = null,
+    val loading: Boolean = true,
+    val error: String? = null
+)

@@ -14,10 +14,18 @@ import co.edu.unal.dadm.mova.presentation.screen.auth.SignUpScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.WelcomeScreen
 import co.edu.unal.dadm.mova.presentation.screen.onboarding.IntroPagerScreen
 import co.edu.unal.dadm.mova.presentation.screen.onboarding.AssessmentScreen
+import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
+import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
+import co.edu.unal.dadm.mova.presentation.screen.profile.ProfileScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.AccountSettingsScreen
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: AssessmentRepository) {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val profileRepository = ProfileRepositoryImpl()
+    val preferencesRepository = UserPreferencesImpl(context)
     NavHost(navController = navController, startDestination = Routes.Welcome) {
         composable(Routes.Welcome) {
             WelcomeScreen(
@@ -77,7 +85,39 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
             })
         }
         composable(Routes.Main) {
-            IntroPagerScreen(onFinished = {})
+            val userId = authRepository.currentUser.value?.id
+            if (userId == null) {
+                WelcomeScreen(
+                    onGetStarted = { navController.navigate(Routes.SignUp) },
+                    onSignIn = { navController.navigate(Routes.SignIn) }
+                )
+            } else {
+                ProfileScreen(
+                    repository = profileRepository,
+                    userId = userId,
+                    onSettings = { navController.navigate(Routes.Settings) },
+                    onSignOut = {
+                        authRepository.signOut()
+                        navController.navigate(Routes.Welcome) {
+                            popUpTo(Routes.Main) { inclusive = true }
+                        }
+                    }
+                )
+            }
+        }
+        composable(Routes.Profile) {
+            val userId = authRepository.currentUser.value?.id
+            if (userId != null) {
+                ProfileScreen(profileRepository, userId, { navController.navigate(Routes.Settings) }, {
+                    authRepository.signOut()
+                    navController.navigate(Routes.Welcome) {
+                        popUpTo(Routes.Welcome) { inclusive = true }
+                    }
+                })
+            }
+        }
+        composable(Routes.Settings) {
+            AccountSettingsScreen(preferencesRepository, onBack = { navController.popBackStack() })
         }
     }
 }
