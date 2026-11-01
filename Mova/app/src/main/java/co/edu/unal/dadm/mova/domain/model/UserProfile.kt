@@ -1,3 +1,18 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio UserProfile (data class / enum, Kotlin puro)
+data class UserProfile(
+    val userId: String,
+    val email: String = "",
+    val displayName: String = "",
+    val avatarId: String? = null,
+    val avatarUrl: String? = null,
+    val age: Int? = null,
+    val weightKg: Double? = null,
+    val diet: Diet? = null,
+    val gender: Gender? = null,
+    val fitnessLevel: FitnessLevel? = null,
+    val goal: Goal? = null,
+    val upliftScore: Int = 0
+    ,
+    val isPremium: Boolean = false
+)

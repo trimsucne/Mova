@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio UpliftScore (data class / enum, Kotlin puro)
+data class UpliftScore(val value: Int) {
+    init {
+        require(value in 0..100)
+    }
+}
