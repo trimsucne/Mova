@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.core.common
 
-// TODO: sealed Result / Resource<T> (Loading, Success, Error)
+sealed interface Result<out T> {
+    data class Success<T>(val data: T) : Result<T>
+    data class Error(val message: String) : Result<Nothing>
+    data object Loading : Result<Nothing>
+}
