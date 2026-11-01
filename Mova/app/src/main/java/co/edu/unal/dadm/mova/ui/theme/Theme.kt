@@ -10,17 +10,23 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    primary = MovaOrangeLight,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = MovaOrange,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+    background = Color.White,
+    surface = Color.White,
+    onPrimary = Color.White,
+    onBackground = MovaInk,
+    onSurface = MovaInk
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -37,7 +43,7 @@ private val LightColorScheme = lightColorScheme(
 fun MovaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
