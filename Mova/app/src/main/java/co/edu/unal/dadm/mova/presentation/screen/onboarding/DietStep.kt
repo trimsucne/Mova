@@ -5,7 +5,7 @@ import co.edu.unal.dadm.mova.domain.model.Diet
 
 @Composable
 fun DietStep(selected: Diet?, onSelected: (Diet) -> Unit, onContinue: () -> Unit) {
-    AssessmentStep(1, "What's your diet?", "Choose what best fits your eating habits.", selected != null, onContinue) {
+    AssessmentStep(1, "What's your diet?", "Choose the diet that best fits your eating habits.", selected != null, onContinue) {
         Diet.entries.forEach { diet ->
             OptionButton(diet.label(), selected == diet) { onSelected(diet) }
         }
