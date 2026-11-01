@@ -12,4 +12,5 @@ object Routes {
     const val Main = "main"
     const val Profile = "profile"
     const val Settings = "settings"
+    const val Premium = "premium"
 }

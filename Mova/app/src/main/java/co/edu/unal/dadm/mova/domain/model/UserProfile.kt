@@ -5,6 +5,7 @@ data class UserProfile(
     val email: String = "",
     val displayName: String = "",
     val avatarId: String? = null,
+    val avatarUrl: String? = null,
     val age: Int? = null,
     val weightKg: Double? = null,
     val diet: Diet? = null,
@@ -12,4 +13,6 @@ data class UserProfile(
     val fitnessLevel: FitnessLevel? = null,
     val goal: Goal? = null,
     val upliftScore: Int = 0
+    ,
+    val isPremium: Boolean = false
 )

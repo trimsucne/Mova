@@ -50,12 +50,14 @@ class FirestoreUserDataSource(
             email = getString("email").orEmpty(),
             displayName = getString("displayName").orEmpty(),
             avatarId = getString("avatarId"),
+            avatarUrl = getString("avatarUrl"),
             age = getLong("age")?.toInt(),
             weightKg = getDouble("weightKg"),
             diet = getString("diet")?.let { runCatching { Diet.valueOf(it) }.getOrNull() },
             gender = getString("gender")?.let { runCatching { Gender.valueOf(it) }.getOrNull() },
             fitnessLevel = getString("fitnessLevel")?.let { runCatching { FitnessLevel.valueOf(it) }.getOrNull() },
             goal = getString("goal")?.let { runCatching { Goal.valueOf(it) }.getOrNull() },
-            upliftScore = getLong("upliftScore")?.toInt() ?: 0
+            upliftScore = getLong("upliftScore")?.toInt() ?: 0,
+            isPremium = getBoolean("isPremium") ?: false
         )
 }

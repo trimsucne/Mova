@@ -18,6 +18,7 @@ import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
 import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
 import co.edu.unal.dadm.mova.presentation.screen.profile.ProfileScreen
 import co.edu.unal.dadm.mova.presentation.screen.profile.AccountSettingsScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.PremiumScreen
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
@@ -101,7 +102,8 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
                         navController.navigate(Routes.Welcome) {
                             popUpTo(Routes.Main) { inclusive = true }
                         }
-                    }
+                    },
+                    onPremiumFeature = { navController.navigate(Routes.Premium) }
                 )
             }
         }
@@ -118,6 +120,12 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
         }
         composable(Routes.Settings) {
             AccountSettingsScreen(preferencesRepository, onBack = { navController.popBackStack() })
+        }
+        composable(Routes.Premium) {
+            PremiumScreen(
+                onPurchase = { },
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
