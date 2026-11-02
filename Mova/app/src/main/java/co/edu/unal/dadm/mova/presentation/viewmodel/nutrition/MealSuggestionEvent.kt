@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.nutrition
 
-// TODO: sealed interface de eventos de usuario: Recomendacion de comida con carrusel (CFA 1)
+import co.edu.unal.dadm.mova.domain.model.MealCategory
+
+sealed interface MealSuggestionEvent {
+    data class SelectCategory(val category: MealCategory?) : MealSuggestionEvent
+}
