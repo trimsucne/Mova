@@ -1,3 +1,13 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.home
 
-// TODO: sealed interface de eventos de usuario: Home dashboard (CFA 10 / 20): combine() de repositorios
+sealed interface HomeEvent {
+    data class SearchQueryChanged(val query: String) : HomeEvent
+    object PerformSearch : HomeEvent
+    object OpenNotifications : HomeEvent
+    object OpenHydration : HomeEvent
+    object OpenScore : HomeEvent
+    object OpenNutrition : HomeEvent
+    object OpenCoach : HomeEvent
+    data class SelectWorkout(val workoutId: String) : HomeEvent
+}
+

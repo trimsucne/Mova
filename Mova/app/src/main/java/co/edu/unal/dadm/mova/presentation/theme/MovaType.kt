@@ -1,3 +1,6 @@
 package co.edu.unal.dadm.mova.presentation.theme
 
-// TODO: Tokens/tema MOVA (Type): migrar y reemplazar ui/theme/ existente; naranja #F97316, claro/oscuro
+import androidx.compose.material3.Typography
+
+val MovaTypography = Typography()
+
