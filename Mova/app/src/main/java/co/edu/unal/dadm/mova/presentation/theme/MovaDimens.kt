@@ -1,3 +1,11 @@
 package co.edu.unal.dadm.mova.presentation.theme
 
-// TODO: Tokens/tema MOVA (Dimens): migrar y reemplazar ui/theme/ existente; naranja #F97316, claro/oscuro
+import androidx.compose.ui.unit.dp
+
+object MovaDimens {
+    val PaddingSmall = 8.dp
+    val PaddingMedium = 16.dp
+    val PaddingLarge = 24.dp
+    val CardElevation = 2.dp
+}
+
