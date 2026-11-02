@@ -40,8 +40,8 @@ fun FitnessLevelStep(
     val currentLevelValue = currentLevel.value.coerceIn(1, 5)
 
     AssessmentStep(
-        stepIndex = 3,
-        totalSteps = 6,
+        stepIndex = 4,
+        totalSteps = 9,
         title = "How would you rate\nyour fitness level?",
         canContinue = true,
         onContinue = onContinue,

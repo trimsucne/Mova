@@ -39,8 +39,8 @@ fun GenderStep(
     onBack: (() -> Unit)? = null
 ) {
     AssessmentStep(
-        stepIndex = 4,
-        totalSteps = 6,
+        stepIndex = 5,
+        totalSteps = 9,
         title = "What is your gender?",
         canContinue = selected != null,
         onContinue = onContinue,

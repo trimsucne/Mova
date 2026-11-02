@@ -10,6 +10,7 @@ data class UserProfile(
     val avatarPath: String? = null,
     val age: Int? = null,
     val weightKg: Double? = null,
+    val heightCm: Int? = null,
     val diet: Diet? = null,
     val gender: Gender? = null,
     val fitnessLevel: FitnessLevel? = null,

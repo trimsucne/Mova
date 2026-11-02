@@ -7,6 +7,7 @@ data class UserProfileEntity(
     val avatarPath: String? = null,
     val age: Int? = null,
     val weightKg: Double? = null,
+    val heightCm: Int? = null,
     val location: String = "Tokyo, Japan",
     val isPremium: Boolean = false,
     val upliftScore: Int = 95

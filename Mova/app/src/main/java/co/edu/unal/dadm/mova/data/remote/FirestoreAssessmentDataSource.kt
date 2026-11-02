@@ -11,6 +11,7 @@ class FirestoreAssessmentDataSource(
         val values = mapOf(
             "age" to draft.age,
             "weightKg" to draft.weightKg,
+            "heightCm" to draft.heightCm,
             "diet" to draft.diet?.name,
             "gender" to draft.gender?.name,
             "fitnessLevel" to draft.fitnessLevel?.name,

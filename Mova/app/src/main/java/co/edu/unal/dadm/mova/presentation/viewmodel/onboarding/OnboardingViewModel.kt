@@ -2,7 +2,7 @@ package co.edu.unal.dadm.mova.presentation.viewmodel.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.edu.unal.dadm.mova.domain.model.Diet
+import co.edu.unal.dadm.mova.domain.model.defaultHeightCm
 import co.edu.unal.dadm.mova.domain.model.FitnessLevel
 import co.edu.unal.dadm.mova.domain.model.Gender
 import co.edu.unal.dadm.mova.domain.model.Goal
@@ -24,6 +24,7 @@ class OnboardingViewModel(
         val updated = when (event) {
             is OnboardingEvent.SetAge -> draft.copy(age = event.age)
             is OnboardingEvent.SetWeight -> draft.copy(weightKg = event.weightKg)
+            is OnboardingEvent.SetHeight -> draft.copy(heightCm = event.heightCm)
             is OnboardingEvent.SetDiet -> draft.copy(diet = event.diet)
             is OnboardingEvent.SetGender -> draft.copy(gender = event.gender)
             is OnboardingEvent.SetFitnessLevel -> draft.copy(fitnessLevel = event.level)
@@ -31,11 +32,12 @@ class OnboardingViewModel(
             is OnboardingEvent.SetVoiceNote -> draft.copy(voiceNote = event.note)
             is OnboardingEvent.SetAvatar -> draft.copy(avatarId = event.avatarId)
             OnboardingEvent.Complete -> {
+                val gender = draft.gender ?: Gender.MALE
                 val completedDraft = draft.copy(
                     age = draft.age ?: 19,
                     weightKg = draft.weightKg ?: 62.0,
-                    diet = draft.diet ?: Diet.VEGAN,
-                    gender = draft.gender ?: Gender.MALE,
+                    heightCm = draft.heightCm ?: defaultHeightCm(gender),
+                    gender = gender,
                     fitnessLevel = draft.fitnessLevel ?: FitnessLevel.INTERMEDIATE,
                     goal = draft.goal ?: Goal.AI_COACH,
                     avatarId = draft.avatarId ?: "avatar_2"

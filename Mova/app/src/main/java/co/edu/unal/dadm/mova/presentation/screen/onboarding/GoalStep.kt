@@ -16,8 +16,8 @@ fun GoalStep(
     onBack: (() -> Unit)? = null
 ) {
     AssessmentStep(
-        stepIndex = 6,
-        totalSteps = 6,
+        stepIndex = 7,
+        totalSteps = 9,
         title = "What's your fitness\ngoal/target?",
         canContinue = selected != null,
         onContinue = onContinue,

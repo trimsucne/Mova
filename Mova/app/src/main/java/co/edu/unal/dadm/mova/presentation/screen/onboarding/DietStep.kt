@@ -16,8 +16,8 @@ fun DietStep(
     onBack: (() -> Unit)? = null
 ) {
     AssessmentStep(
-        stepIndex = 1,
-        totalSteps = 6,
+        stepIndex = 9,
+        totalSteps = 9,
         headerTitle = "Dietary options",
         title = "What's your diet?",
         description = "Choose the diet that best fits your eating habits.",

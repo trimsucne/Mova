@@ -55,6 +55,7 @@ class FirestoreUserDataSource(
             avatarPath = getString("avatarPath") ?: getString("avatarId"),
             age = getLong("age")?.toInt(),
             weightKg = getDouble("weightKg"),
+            heightCm = getLong("heightCm")?.toInt(),
             diet = getString("diet")?.let { runCatching { Diet.valueOf(it) }.getOrNull() },
             gender = getString("gender")?.let { runCatching { Gender.valueOf(it) }.getOrNull() },
             fitnessLevel = getString("fitnessLevel")?.let { runCatching { FitnessLevel.valueOf(it) }.getOrNull() },
