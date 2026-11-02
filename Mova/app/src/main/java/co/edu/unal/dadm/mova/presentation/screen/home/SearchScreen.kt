@@ -55,6 +55,7 @@ import co.edu.unal.dadm.mova.core.di.SearchContainer
 import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.domain.model.SearchResult
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.MealImage
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.LightStatusBarIcons
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.RoundedSquareBackButton
 import co.edu.unal.dadm.mova.presentation.theme.MovaBlueIcon
 import co.edu.unal.dadm.mova.presentation.theme.MovaField
@@ -174,6 +175,7 @@ private fun SearchContent(
 
 @Composable
 private fun SearchHeader(state: SearchUiState, onEvent: (SearchEvent) -> Unit, onBack: () -> Unit) {
+    LightStatusBarIcons()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -184,7 +186,7 @@ private fun SearchHeader(state: SearchUiState, onEvent: (SearchEvent) -> Unit, o
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            RoundedSquareBackButton(onClick = onBack, onDark = true, glyph = "↩")
+            RoundedSquareBackButton(onClick = onBack, onDark = true)
             Text("Search", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
         }
         Row(

@@ -1,5 +1,6 @@
 package co.edu.unal.dadm.mova.presentation.screen.nutrition
 
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.RoundedSquareBackButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -183,7 +184,7 @@ private fun DetailTopBar(onBack: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CircleButton("‹", onClick = onBack, fontSize = 24.sp)
+        RoundedSquareBackButton(onClick = onBack)
         Text(
             "Nutrition", color = MovaInk, fontSize = 18.sp, fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center, modifier = Modifier.weight(1f)

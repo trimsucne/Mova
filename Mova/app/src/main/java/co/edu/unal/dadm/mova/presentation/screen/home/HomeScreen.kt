@@ -41,11 +41,9 @@ fun HomeScreenRoute(
         uiState = uiState,
         onSearchQueryChange = { query ->
             viewModel.onEvent(HomeEvent.SearchQueryChanged(query))
-            if (query.length >= 2) {
-                onNavigateToSearch(query)
-            }
         },
         onSearchSubmitted = { query ->
+            viewModel.onEvent(HomeEvent.SearchQueryChanged(""))
             onNavigateToSearch(query)
         },
         onNotificationsClick = onNavigateToNotifications,

@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +30,7 @@ fun RoundedSquareBackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onDark: Boolean = false,
-    glyph: String = "‹"
+    icon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack
 ) {
     Box(
         modifier = modifier
@@ -36,11 +40,10 @@ fun RoundedSquareBackButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = glyph,
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (onDark) Color.White else MovaInk
+        Icon(
+            imageVector = icon,
+            contentDescription = "Back",
+            tint = if (onDark) Color.White else MovaInk
         )
     }
 }

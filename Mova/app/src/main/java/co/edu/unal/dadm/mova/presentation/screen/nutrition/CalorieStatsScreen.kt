@@ -1,5 +1,6 @@
 package co.edu.unal.dadm.mova.presentation.screen.nutrition
 
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.RoundedSquareBackButton
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -69,15 +70,7 @@ private fun CalorieStatsContent(state: CalorieStatsUiState, today: LocalDate, on
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .border(BorderStroke(1.dp, Color(0xFFD0D0D4)), CircleShape)
-                        .clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
-                ) { Text("←", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MovaInk) }
+                RoundedSquareBackButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterStart))
                 Text("Calorie Stats", fontSize = 26.sp, fontWeight = FontWeight.Bold, color = MovaInk)
             }
             val share = state.share

@@ -183,7 +183,7 @@ private fun CalorieIntakeContent(
                         .padding(horizontal = 20.dp)
                         .layout { measurable, constraints ->
                             val placeable = measurable.measure(constraints)
-                            val overlap = 70.dp.roundToPx().coerceAtMost(placeable.height)
+                            val overlap = 24.dp.roundToPx().coerceAtMost(placeable.height)
                             layout(placeable.width, placeable.height - overlap) { placeable.place(0, -overlap) }
                         }
                 )

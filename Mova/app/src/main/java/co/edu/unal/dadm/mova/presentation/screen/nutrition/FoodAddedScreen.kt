@@ -1,5 +1,6 @@
 package co.edu.unal.dadm.mova.presentation.screen.nutrition
 
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.LightStatusBarIcons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ fun FoodAddedScreen(onBackToMyMeals: () -> Unit) {
 // degradado, check en cuadrado redondeado y botón «Great, thanks! ✓», por eso se compone aquí.
 @Composable
 private fun FoodAddedContent(onBackToMyMeals: () -> Unit) {
+    LightStatusBarIcons()
     Box(
         modifier = Modifier
             .fillMaxSize()

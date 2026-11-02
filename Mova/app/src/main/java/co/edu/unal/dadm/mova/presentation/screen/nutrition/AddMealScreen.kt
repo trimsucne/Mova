@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import co.edu.unal.dadm.mova.core.di.NutritionContainer
 import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.PrimaryArrowButton
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.LightStatusBarIcons
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.components.RoundedSquareBackButton
 import co.edu.unal.dadm.mova.presentation.theme.MovaBlueIcon
 import co.edu.unal.dadm.mova.presentation.theme.MovaField
@@ -96,6 +97,7 @@ private fun AddMealContent(
     onFatChanged: (String) -> Unit,
     onSave: () -> Unit
 ) {
+    LightStatusBarIcons()
     Column(modifier = Modifier.fillMaxSize().background(ScreenBg).navigationBarsPadding()) {
         Row(
             modifier = Modifier
@@ -107,7 +109,7 @@ private fun AddMealContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            RoundedSquareBackButton(onClick = onBack, onDark = true, glyph = "↩")
+            RoundedSquareBackButton(onClick = onBack, onDark = true)
             Text("Add New Meal", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
         }
         Column(
