@@ -1,3 +1,19 @@
 package co.edu.unal.dadm.mova.presentation.theme
 
-// TODO: Tokens/tema MOVA (Theme): migrar y reemplazar ui/theme/ existente; naranja #F97316, claro/oscuro
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+
+@Composable
+fun MovaTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) DarkColorScheme else LightColorScheme
+    MaterialTheme(
+        colorScheme = colors,
+        typography = MovaTypography,
+        shapes = MovaShapes,
+        content = content
+    )
+}

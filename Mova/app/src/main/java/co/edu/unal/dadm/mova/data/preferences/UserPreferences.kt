@@ -21,17 +21,20 @@ class UserPreferencesImpl(context: Context) : UserPreferencesRepository {
             darkMode = values[DARK_MODE] ?: false,
             unitSystem = values[UNIT_SYSTEM]?.let { runCatching { UnitSystem.valueOf(it) }.getOrNull() }
                 ?: UnitSystem.METRIC,
-            notificationsEnabled = values[NOTIFICATIONS] ?: true
+            notificationsEnabled = values[NOTIFICATIONS] ?: true,
+            avatarPath = values[AVATAR_PATH]
         )
     }
 
     override suspend fun setDarkMode(enabled: Boolean) { dataStore.edit { it[DARK_MODE] = enabled } }
     override suspend fun setUnitSystem(unitSystem: UnitSystem) { dataStore.edit { it[UNIT_SYSTEM] = unitSystem.name } }
     override suspend fun setNotificationsEnabled(enabled: Boolean) { dataStore.edit { it[NOTIFICATIONS] = enabled } }
+    override suspend fun setAvatarPath(path: String) { dataStore.edit { it[AVATAR_PATH] = path } }
 
     private companion object {
         val DARK_MODE = booleanPreferencesKey("dark_mode")
         val UNIT_SYSTEM = stringPreferencesKey("unit_system")
         val NOTIFICATIONS = booleanPreferencesKey("notifications")
+        val AVATAR_PATH = stringPreferencesKey("avatar_path")
     }
 }

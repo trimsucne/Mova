@@ -1,25 +1,34 @@
 package co.edu.unal.dadm.mova.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import co.edu.unal.dadm.mova.domain.repository.AuthRepository
+import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
+import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
 import co.edu.unal.dadm.mova.domain.repository.AssessmentRepository
-import co.edu.unal.dadm.mova.presentation.screen.auth.ResetPasswordScreen
+import co.edu.unal.dadm.mova.domain.repository.AuthRepository
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetMethodScreen
+import co.edu.unal.dadm.mova.presentation.screen.auth.ResetPasswordScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetSentScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignInScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.SignUpScreen
 import co.edu.unal.dadm.mova.presentation.screen.auth.WelcomeScreen
-import co.edu.unal.dadm.mova.presentation.screen.onboarding.IntroPagerScreen
 import co.edu.unal.dadm.mova.presentation.screen.onboarding.AssessmentScreen
-import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
-import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
-import co.edu.unal.dadm.mova.presentation.screen.profile.ProfileScreen
+import co.edu.unal.dadm.mova.presentation.screen.onboarding.AvatarStep
+import co.edu.unal.dadm.mova.presentation.screen.onboarding.IntroPagerScreen
 import co.edu.unal.dadm.mova.presentation.screen.profile.AccountSettingsScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.CoachContactScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.LinkedDevicesScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.MainSecurityScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.NotificationSettingsScreen
+import co.edu.unal.dadm.mova.presentation.screen.profile.PersonalInfoScreen
 import co.edu.unal.dadm.mova.presentation.screen.profile.PremiumScreen
-import androidx.compose.ui.platform.LocalContext
+import co.edu.unal.dadm.mova.presentation.screen.profile.ProfileScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: AssessmentRepository) {
@@ -80,46 +89,94 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
                 authRepository = authRepository,
                 assessmentRepository = assessmentRepository,
                 onComplete = {
-                navController.navigate(Routes.Main) {
-                    popUpTo(Routes.Assessment) { inclusive = true }
+                    navController.navigate(Routes.Profile) {
+                        popUpTo(Routes.Assessment) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
         composable(Routes.Main) {
-            val userId = authRepository.currentUser.value?.id
-            if (userId == null) {
-                WelcomeScreen(
-                    onGetStarted = { navController.navigate(Routes.SignUp) },
-                    onSignIn = { navController.navigate(Routes.SignIn) }
-                )
-            } else {
-                ProfileScreen(
-                    repository = profileRepository,
-                    userId = userId,
-                    onSettings = { navController.navigate(Routes.Settings) },
-                    onSignOut = {
-                        authRepository.signOut()
-                        navController.navigate(Routes.Welcome) {
-                            popUpTo(Routes.Main) { inclusive = true }
-                        }
-                    },
-                    onPremiumFeature = { navController.navigate(Routes.Premium) }
-                )
-            }
+            val userId = authRepository.currentUser.value?.id ?: "demo_user_id"
+            ProfileScreen(
+                repository = profileRepository,
+                userId = userId,
+                onSettings = { navController.navigate(Routes.Settings) },
+                onAvatarPicker = { navController.navigate(Routes.AvatarPicker) },
+                onSignOut = {
+                    authRepository.signOut()
+                    navController.navigate(Routes.Welcome) {
+                        popUpTo(Routes.Main) { inclusive = true }
+                    }
+                },
+                onPremiumFeature = { navController.navigate(Routes.Premium) }
+            )
         }
         composable(Routes.Profile) {
-            val userId = authRepository.currentUser.value?.id
-            if (userId != null) {
-                ProfileScreen(profileRepository, userId, { navController.navigate(Routes.Settings) }, {
+            val userId = authRepository.currentUser.value?.id ?: "demo_user_id"
+            ProfileScreen(
+                repository = profileRepository,
+                userId = userId,
+                onSettings = { navController.navigate(Routes.Settings) },
+                onAvatarPicker = { navController.navigate(Routes.AvatarPicker) },
+                onSignOut = {
                     authRepository.signOut()
                     navController.navigate(Routes.Welcome) {
                         popUpTo(Routes.Welcome) { inclusive = true }
                     }
-                })
-            }
+                },
+                onPremiumFeature = { navController.navigate(Routes.Premium) }
+            )
+        }
+        composable(Routes.AvatarPicker) {
+            val userId = authRepository.currentUser.value?.id ?: "demo_user_id"
+            AvatarStep(
+                selected = "avatar_2",
+                onSelected = { chosenAvatar ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if (chosenAvatar.startsWith("content://")) {
+                            val uri = android.net.Uri.parse(chosenAvatar)
+                            val savedPath = profileRepository.saveAvatar(uri, "image/jpeg")
+                            profileRepository.update(userId, mapOf("avatarPath" to savedPath))
+                        } else {
+                            profileRepository.update(userId, mapOf("avatarPath" to chosenAvatar))
+                        }
+                    }
+                    navController.popBackStack()
+                },
+                onContinue = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
         }
         composable(Routes.Settings) {
-            AccountSettingsScreen(preferencesRepository, onBack = { navController.popBackStack() })
+            AccountSettingsScreen(
+                repository = preferencesRepository,
+                onBack = { navController.popBackStack() },
+                onNotifications = { navController.navigate(Routes.SettingsNotifications) },
+                onPersonalInfo = { navController.navigate(Routes.SettingsPersonalInfo) },
+                onCoachContact = { navController.navigate(Routes.SettingsCoachContact) },
+                onLinkedDevices = { navController.navigate(Routes.SettingsLinkedDevices) },
+                onMainSecurity = { navController.navigate(Routes.SettingsMainSecurity) }
+            )
+        }
+        composable(Routes.SettingsNotifications) {
+            NotificationSettingsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SettingsPersonalInfo) {
+            val userId = authRepository.currentUser.value?.id ?: "demo_user_id"
+            PersonalInfoScreen(
+                repository = profileRepository,
+                userId = userId,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.SettingsCoachContact) {
+            CoachContactScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SettingsLinkedDevices) {
+            LinkedDevicesScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.SettingsMainSecurity) {
+            MainSecurityScreen(onBack = { navController.popBackStack() })
         }
         composable(Routes.Premium) {
             PremiumScreen(

@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.data.database
 
-// TODO: @Database(exportSchema = true) con todas las entidades y DAOs
+import co.edu.unal.dadm.mova.data.dao.UserDao
+import co.edu.unal.dadm.mova.data.dao.UserProfileDao
+
+class MovaDatabase {
+    fun userDao(): UserDao = UserDao()
+    fun userProfileDao(): UserProfileDao = UserProfileDao()
+}

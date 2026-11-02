@@ -1,24 +1,37 @@
 package co.edu.unal.dadm.mova.presentation.screen.auth
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import co.edu.unal.dadm.mova.R
+import co.edu.unal.dadm.mova.presentation.components.ImagePlaceholder
+import co.edu.unal.dadm.mova.presentation.components.SuccessDialog
 
 @Composable
-fun ResetSentScreen(onBackToSignIn: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+fun ResetSentScreen(
+    onBackToSignIn: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
-        Text("Password Sent!")
-        Text("Check your email for reset instructions.")
-        Button(onClick = onBackToSignIn, modifier = Modifier.fillMaxWidth()) { Text("Back to Sign In") }
+        // Metallic Padlock Background Image
+        ImagePlaceholder(
+            label = "Metallic Lock Security Background",
+            drawableResId = R.drawable.img_metallic_lock,
+            modifier = Modifier.fillMaxSize(),
+            backgroundColor = Color(0xFF2C2C2E)
+        )
+
+        // Overlay dialog
+        SuccessDialog(
+            title = "Password Sent!",
+            message = "We've sent the password to **221b@gmail.com. Resend if the password is not received! 🔥",
+            buttonText = "Re-Send Password 🔒",
+            onButtonClick = onBackToSignIn,
+            onClose = onBackToSignIn
+        )
     }
 }

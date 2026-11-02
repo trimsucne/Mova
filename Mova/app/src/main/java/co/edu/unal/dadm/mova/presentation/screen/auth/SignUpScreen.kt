@@ -1,42 +1,67 @@
 package co.edu.unal.dadm.mova.presentation.screen.auth
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.edu.unal.dadm.mova.R
 import co.edu.unal.dadm.mova.domain.repository.AuthRepository
+import co.edu.unal.dadm.mova.presentation.components.MovaPrimaryButton
+import co.edu.unal.dadm.mova.presentation.components.MovaTextField
+import co.edu.unal.dadm.mova.presentation.screen.auth.components.AuthHeader
 import co.edu.unal.dadm.mova.presentation.screen.auth.components.SocialLoginRow
+import co.edu.unal.dadm.mova.presentation.theme.MovaInk
+import co.edu.unal.dadm.mova.presentation.theme.MovaOrange
 import co.edu.unal.dadm.mova.presentation.viewmodel.auth.AuthViewModelFactory
 import co.edu.unal.dadm.mova.presentation.viewmodel.auth.SignUpViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import androidx.activity.result.contract.ActivityResultContracts
 
 @Composable
-fun SignUpScreen(repository: AuthRepository, onBack: () -> Unit, onSignIn: () -> Unit, onAuthenticated: () -> Unit) {
+fun SignUpScreen(
+    repository: AuthRepository,
+    onBack: () -> Unit,
+    onSignIn: () -> Unit,
+    onAuthenticated: () -> Unit
+) {
     val viewModel: SignUpViewModel = viewModel(factory = AuthViewModelFactory(repository))
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val googleSignInClient = remember(context) {
+    val context = LocalContext.current
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    val client = remember(context) {
         GoogleSignIn.getClient(
             context,
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -45,37 +70,118 @@ fun SignUpScreen(repository: AuthRepository, onBack: () -> Unit, onSignIn: () ->
                 .build()
         )
     }
-    val googleLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode != android.app.Activity.RESULT_OK) {
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode != Activity.RESULT_OK) {
             viewModel.googleSignInCancelled()
-            return@rememberLauncherForActivityResult
-        }
-        try {
-            val account = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                .getResult(ApiException::class.java)
-            account.idToken?.let(viewModel::googleSignIn)
-                ?: viewModel.googleSignInError("Google did not return an ID token")
-        } catch (_: ApiException) {
-            viewModel.googleSignInError("Google sign-in failed")
+        } else {
+            try {
+                val account = GoogleSignIn.getSignedInAccountFromIntent(result.data).getResult(ApiException::class.java)
+                account.idToken?.let(viewModel::googleSignIn) ?: viewModel.googleSignInError("Google did not return an ID token")
+            } catch (_: ApiException) {
+                viewModel.googleSignInError("Google sign-up failed")
+            }
         }
     }
+
     LaunchedEffect(state.completed) {
         if (state.completed) onAuthenticated()
     }
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Sign Up For Free", style = MaterialTheme.typography.headlineMedium)
-        OutlinedTextField(state.email, viewModel::emailChanged, label = { Text("Email Address") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(state.password, viewModel::passwordChanged, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(state.confirmation, viewModel::confirmationChanged, label = { Text("Confirm Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
-        state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-        Button(onClick = viewModel::signUp, enabled = !state.isLoading, modifier = Modifier.fillMaxWidth()) {
-            if (state.isLoading) CircularProgressIndicator() else Text("Sign Up")
+        AuthHeader(
+            title = "Sign Up For Free",
+            subtitle = "Quickly make your account in 1 minute",
+            onBack = onBack
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            MovaTextField(
+                value = state.email,
+                onValueChange = viewModel::emailChanged,
+                label = "Email Address",
+                placeholder = "elementary221b@gmail.com",
+                leadingIconText = "✉"
+            )
+
+            MovaTextField(
+                value = state.password,
+                onValueChange = viewModel::passwordChanged,
+                label = "Password",
+                placeholder = "••••••••••••",
+                leadingIconText = "🔒",
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Text(if (passwordVisible) "👁️" else "👁️‍🗨️", fontSize = 16.sp)
+                    }
+                }
+            )
+
+            val hasPasswordError = state.error != null
+            MovaTextField(
+                value = state.confirmation,
+                onValueChange = viewModel::confirmationChanged,
+                label = "Confirm Password",
+                placeholder = "elementary221b",
+                leadingIconText = "🔒",
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Text(if (confirmPasswordVisible) "👁️" else "👁️‍🗨️", fontSize = 16.sp)
+                    }
+                },
+                isError = hasPasswordError,
+                errorMessage = state.error ?: "ERROR: Password Don't Match!"
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            MovaPrimaryButton(
+                text = "Sign Up",
+                onClick = viewModel::signUp,
+                enabled = !state.isLoading,
+                containerColor = MovaInk,
+                contentColor = Color.White
+            )
+
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SocialLoginRow(
+                enabled = !state.isLoading,
+                onGoogleClick = { launcher.launch(client.signInIntent) }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Already have an account? ", fontSize = 14.sp, color = Color.Gray)
+                Text(
+                    text = "Sign In.",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MovaOrange,
+                    modifier = Modifier.clickable(onClick = onSignIn)
+                )
+            }
         }
-        SocialLoginRow(!state.isLoading) { googleLauncher.launch(googleSignInClient.signInIntent) }
-        TextButton(onClick = onSignIn) { Text("Already have an account? Sign In") }
-        TextButton(onClick = onBack) { Text("Back") }
     }
 }
