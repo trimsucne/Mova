@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -112,7 +113,7 @@ private fun SearchContent(
     onBack: () -> Unit,
     onOpenMeal: (String) -> Unit
 ) {
-    Scaffold(containerColor = ScreenBg, contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0), snackbarHost = { SnackbarHost(snackbar) }) { padding ->
+    Scaffold(containerColor = ScreenBg, contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0), snackbarHost = { SnackbarHost(snackbar, modifier = Modifier.navigationBarsPadding().imePadding()) }) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             SearchHeader(state = state, onEvent = onEvent, onBack = onBack)
             Column(
