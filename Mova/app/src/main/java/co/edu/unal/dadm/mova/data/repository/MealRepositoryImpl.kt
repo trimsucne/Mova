@@ -62,6 +62,9 @@ class MealRepositoryImpl(
         val current = logDao.getById(logId)
         if (current == null) {
             Result.Error("Meal log not found")
+        } else if (current.userId == MealLog.LOCAL_USER_ID) {
+            logDao.hardDelete(logId)
+            Result.Success(Unit)
         } else {
             val tombstone = current.copy(deleted = true, updatedAt = now(), syncState = SyncState.PENDING.name)
             logDao.upsert(tombstone)
@@ -74,22 +77,21 @@ class MealRepositoryImpl(
         Result.Error(e.message ?: "Could not delete the meal")
     }
 
-    /** Sube todos los pendientes del usuario. Devuelve false si alguno falló. */
+    /** Sube los pendientes del usuario y se detiene en el primer fallo. Devuelve false si alguno falló. */
     suspend fun syncPending(userId: String): Boolean {
         if (userId == MealLog.LOCAL_USER_ID) return true
-        var allOk = true
-        logDao.getPending(userId).forEach { entity ->
+        for (entity in logDao.getPending(userId)) {
             try {
                 push(entity)
             } catch (_: TimeoutCancellationException) {
-                allOk = false
+                return false
             } catch (e: CancellationException) {
                 throw e
             } catch (_: Exception) {
-                allOk = false
+                return false
             }
         }
-        return allOk
+        return true
     }
 
     /** Descarga inicial: solo si el teléfono no tiene registros de ese usuario. */

@@ -9,11 +9,16 @@ import co.edu.unal.dadm.mova.data.remote.RemoteChange
 import co.edu.unal.dadm.mova.domain.model.Macros
 import co.edu.unal.dadm.mova.domain.model.MealLog
 import co.edu.unal.dadm.mova.domain.model.MealType
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -137,5 +142,68 @@ class MealRepositoryImplTest {
         repo.onSignOut("u1")
         assertNull(dao.getById("synced"))
         assertEquals("PENDING", dao.getById("pending")!!.syncState)
+    }
+
+    @Test
+    fun `push timeout leaves row pending and schedules worker`() = runTest {
+        remote.hangUpserts = true
+        val repo = repository()
+        repo.log(entry())
+        advanceUntilIdle()
+        assertEquals("PENDING", dao.getById("a")!!.syncState)
+        assertEquals(1, scheduled)
+    }
+
+    @Test
+    fun `cancelling the push scope does not schedule`() = runTest {
+        remote.hangUpserts = true
+        val job = Job()
+        val pushScope = CoroutineScope(StandardTestDispatcher(testScheduler) + job)
+        val repo = MealRepositoryImpl(noMeals, dao, remote, { scheduled++ }, pushScope, now = { 9_000 })
+        repo.log(entry())
+        runCurrent()
+        job.cancel()
+        advanceUntilIdle()
+        assertEquals("PENDING", dao.getById("a")!!.syncState)
+        assertEquals(0, scheduled)
+    }
+
+    @Test
+    fun `stale upload does not mark a newer tombstone as synced`() = runTest {
+        val gate = CompletableDeferred<Unit>()
+        remote.upsertGate = gate
+        remote.failDeletes = true
+        val repo = repository()
+        repo.log(entry())
+        runCurrent()
+        repo.delete("a")
+        runCurrent()
+        gate.complete(Unit)
+        advanceUntilIdle()
+        val row = dao.getById("a")!!
+        assertTrue(row.deleted)
+        assertEquals("PENDING", row.syncState)
+    }
+
+    @Test
+    fun `syncPending stops at the first failure`() = runTest {
+        remote.offline = true
+        val repo = repository()
+        repo.log(entry(id = "a"))
+        repo.log(entry(id = "b"))
+        repo.log(entry(id = "c"))
+        advanceUntilIdle()
+        remote.upsertAttempts = 0
+        assertFalse(repo.syncPending("u1"))
+        assertEquals(1, remote.upsertAttempts)
+    }
+
+    @Test
+    fun `delete of a local row hard deletes without tombstone`() = runTest {
+        val repo = repository()
+        repo.log(entry(userId = MealLog.LOCAL_USER_ID))
+        advanceUntilIdle()
+        assertEquals(Result.Success(Unit), repo.delete("a"))
+        assertNull(dao.getById("a"))
     }
 }
