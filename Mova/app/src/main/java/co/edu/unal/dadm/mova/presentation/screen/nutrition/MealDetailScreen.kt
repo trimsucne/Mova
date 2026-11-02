@@ -16,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -65,9 +68,13 @@ fun MealDetailScreen(
                 MealImage(meal.name, meal.imageRes, Modifier.fillMaxWidth().height(220.dp))
                 Text(meal.name, style = MaterialTheme.typography.headlineSmall)
                 Text("${meal.category.label} · ${meal.prepMinutes} min", color = MovaMuted)
+                var gramsText by rememberSaveable(meal.id) { mutableStateOf(state.grams.toString()) }
                 MovaTextField(
-                    value = state.grams.toString(),
-                    onValueChange = { text -> text.filter(Char::isDigit).toIntOrNull()?.let { viewModel.onEvent(MealDetailEvent.GramsChanged(it)) } },
+                    value = gramsText,
+                    onValueChange = { text ->
+                        gramsText = text.filter(Char::isDigit)
+                        gramsText.toIntOrNull()?.takeIf { it > 0 }?.let { viewModel.onEvent(MealDetailEvent.GramsChanged(it)) }
+                    },
                     label = "Portion (g)",
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -86,7 +93,7 @@ fun MealDetailScreen(
                 MovaPrimaryButton(
                     text = if (state.isSaving) "Adding..." else "Add Meal",
                     onClick = { viewModel.onEvent(MealDetailEvent.AddMeal) },
-                    enabled = !state.isSaving,
+                    enabled = !state.isSaving && (gramsText.toIntOrNull() ?: 0) > 0,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

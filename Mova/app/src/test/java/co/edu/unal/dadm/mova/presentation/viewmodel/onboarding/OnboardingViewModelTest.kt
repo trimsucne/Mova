@@ -55,7 +55,7 @@ class OnboardingViewModelTest {
     fun `default height depends on gender`() {
         assertEquals(160, complete(OnboardingEvent.SetGender(Gender.FEMALE)).heightCm)
         assertEquals(165, complete(OnboardingEvent.SetGender(Gender.PREFER_NOT_TO_SAY)).heightCm)
-        // Sin género, el onboarding asigna MALE -> 170
+        // Sin gÃ©nero, el onboarding asigna MALE -> 170
         assertEquals(170, complete().heightCm)
     }
 

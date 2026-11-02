@@ -55,6 +55,16 @@ class AddMealViewModelTest {
     }
 
     @Test
+    fun `NaN and Infinity macros are rejected without crashing`() {
+        for (bad in listOf("NaN", "Infinity")) {
+            fill("Arepa", bad, "0", "0")
+            vm.onEvent(AddMealEvent.Save)
+            assertNotNull(vm.state.value.macroError)
+        }
+        assertTrue(repo.logs.value.isEmpty())
+    }
+
+    @Test
     fun `all macros zero is rejected`() {
         fill("Arepa", "", "0", "")
         vm.onEvent(AddMealEvent.Save)

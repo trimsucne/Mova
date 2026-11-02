@@ -67,8 +67,13 @@ fun NavGraphBuilder.nutritionGraph(navController: NavController, container: Nutr
     composable(Routes.NutritionAdded, arguments = listOf(optionalDateArg)) { entry ->
         val date = entry.dateArg()
         FoodAddedScreen(onBackToMyMeals = {
+            // Si My Meals ya está en la pila (flujo desde ahí), se descarta junto con lo que hay encima
+            // y se recrea con la fecha elegida: queda exactamente una entrada. Si no (flujo desde Explore),
+            // solo se retira "Food Added" y se apila una.
+            val myMealsInStack = runCatching { navController.getBackStackEntry(Routes.NutritionMyMeals) }.isSuccess
             navController.navigate(Routes.nutritionMyMeals(date)) {
-                popUpTo(Routes.NutritionAdded) { inclusive = true }
+                popUpTo(if (myMealsInStack) Routes.NutritionMyMeals else Routes.NutritionAdded) { inclusive = true }
+                launchSingleTop = true
             }
         })
     }

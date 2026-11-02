@@ -1,5 +1,6 @@
 package co.edu.unal.dadm.mova.data.repository
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -20,13 +21,24 @@ class MealSyncCoordinator(
         var listener: Job? = null
         userIds.distinctUntilChanged().collect { userId ->
             listener?.cancel()
-            previous?.let { repository.onSignOut(it) }
+            previous?.let { safely { repository.onSignOut(it) } }
             if (userId != null) {
-                repository.downloadIfEmpty(userId)
-                repository.syncPending(userId)
-                listener = launch { repository.listenRemote(userId) }
+                safely { repository.downloadIfEmpty(userId) }
+                safely { repository.syncPending(userId) }
+                listener = launch { safely { repository.listenRemote(userId) } }
             }
             previous = userId
+        }
+    }
+
+    // Un fallo de Room/red no debe tumbar el bucle ni la app; la cancelación sí se propaga.
+    private suspend fun safely(block: suspend () -> Unit) {
+        try {
+            block()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            // Se reintenta con la siguiente emisión de sesión o la sincronización periódica.
         }
     }
 }

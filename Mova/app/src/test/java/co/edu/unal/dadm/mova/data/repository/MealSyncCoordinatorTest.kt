@@ -1,6 +1,7 @@
 package co.edu.unal.dadm.mova.data.repository
 
 import co.edu.unal.dadm.mova.data.dao.MealDao
+import co.edu.unal.dadm.mova.data.dao.MealLogDao
 import co.edu.unal.dadm.mova.data.entity.MealEntity
 import co.edu.unal.dadm.mova.data.entity.SyncState
 import co.edu.unal.dadm.mova.data.mapper.toEntity
@@ -35,6 +36,7 @@ class MealSyncCoordinatorTest {
         // backgroundScope no avanza con advanceUntilIdle (ver Task 8): scope hijo propio, cancelado al final.
         val job = Job()
         val scope = CoroutineScope(coroutineContext + job)
+        try {
         val repo = MealRepositoryImpl(noMeals, dao, remote, {}, scope)
         val userIds = MutableStateFlow<String?>("u1")
         MealSyncCoordinator(repo, userIds, scope).start()
@@ -49,6 +51,31 @@ class MealSyncCoordinatorTest {
         advanceUntilIdle()
         assertNull(dao.getById("r1"))
         assertNull(dao.getById("r2"))
-        job.cancel()
+        } finally {
+            job.cancel()
+        }
+    }
+
+    @Test
+    fun `keeps processing session changes when a step throws`() = runTest {
+        remote.docs["r9"] = TestMeals.log("r9", date).toEntity(SyncState.SYNCED)
+        val failingDao = object : MealLogDao by dao {
+            override suspend fun deleteSyncedForUser(userId: String) = throw IllegalStateException("db down")
+        }
+        val job = Job()
+        val scope = CoroutineScope(coroutineContext + job)
+        try {
+            val repo = MealRepositoryImpl(noMeals, failingDao, remote, {}, scope)
+            val userIds = MutableStateFlow<String?>("u1")
+            MealSyncCoordinator(repo, userIds, scope).start()
+            advanceUntilIdle()
+            userIds.value = null // onSignOut -> deleteSyncedForUser lanza
+            advanceUntilIdle()
+            userIds.value = "u2"
+            advanceUntilIdle()
+            assertEquals("SYNCED", dao.getById("r9")!!.syncState)
+        } finally {
+            job.cancel()
+        }
     }
 }

@@ -8,6 +8,7 @@ import co.edu.unal.dadm.mova.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import java.time.LocalDate
 
 // Ingesta, meta y restante de un día
@@ -20,8 +21,8 @@ class ObserveDailyIntakeUseCase(
 ) {
     operator fun invoke(date: LocalDate): Flow<DailyIntake> {
         val userId = currentUserId()
-        // Sin perfil (sin sesión o error de red) se usan los valores por defecto de la meta.
-        val profile = profileRepository.observe(userId).catch { emit(null) }
+        // Sin perfil (sin sesión, sin red o aún sin llegar) se usan los valores por defecto de la meta.
+        val profile = profileRepository.observe(userId).onStart { emit(null) }.catch { emit(null) }
         return combine(
             mealRepository.observeLogs(userId, date),
             profile,

@@ -84,5 +84,5 @@ class AddMealViewModel(
 
     /** Vacío = 0; acepta coma decimal; null si no es un número. */
     private fun parseGrams(text: String): Double? =
-        if (text.isBlank()) 0.0 else text.trim().replace(',', '.').toDoubleOrNull()
+        if (text.isBlank()) 0.0 else text.trim().replace(',', '.').toDoubleOrNull()?.takeIf { it.isFinite() }
 }

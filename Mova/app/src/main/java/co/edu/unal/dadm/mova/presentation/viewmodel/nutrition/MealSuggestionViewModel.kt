@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -31,10 +32,12 @@ class MealSuggestionViewModel(
         viewModelScope.launch {
             combine(
                 mealRepository.observeCatalog(),
-                profileRepository.observe(currentUserId()).catch { emit(null) },
+                profileRepository.observe(currentUserId()).onStart { emit(null) }.catch { emit(null) },
                 observeDailyIntake(today)
             ) { catalog, profile, intake ->
                 catalog to suggestMeals(catalog, profile?.diet, intake)
+            }.catch {
+                _state.update { it.copy(isLoading = false) }
             }.collect { (catalog, suggestions) ->
                 _state.update { it.copy(catalog = catalog, suggestions = suggestions, isLoading = false) }
             }
