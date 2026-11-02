@@ -1,3 +1,12 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.home
 
-// TODO: data class de estado inmutable: Notificaciones Today/Past (CFA 13)
+import co.edu.unal.dadm.mova.domain.model.Notification
+
+data class NotificationsUiState(
+    val selectedTabIndex: Int = 0,
+    val todayNotifications: List<Notification> = emptyList(),
+    val pastNotifications: List<Notification> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+

@@ -1,3 +1,11 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.home
 
-// TODO: data class de estado inmutable: Busqueda: sugerencias, cargando, resultados, vacio (CFA 8/9/24/26)
+import co.edu.unal.dadm.mova.domain.model.SearchResult
+
+data class SearchUiState(
+    val query: String = "",
+    val results: List<SearchResult> = emptyList(),
+    val suggestions: List<String> = listOf("Upper Body", "Hydration", "Salad", "Score", "HIIT"),
+    val isLoading: Boolean = false
+)
+
