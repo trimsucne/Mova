@@ -11,6 +11,7 @@ import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.AddMealScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.FoodAddedScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MealDetailScreen
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.MyMealsScreen
 import java.time.LocalDate
 
 /** Destinos de Nutrición. Cada pantalla agrega aquí su composable (Tasks 12–17). */
@@ -29,6 +30,15 @@ fun NavGraphBuilder.nutritionGraph(navController: NavController, container: Nutr
                     popUpTo(Routes.NutritionMeal) { inclusive = true }
                 }
             }
+        )
+    }
+    composable(Routes.NutritionMyMeals, arguments = listOf(optionalDateArg)) { entry ->
+        MyMealsScreen(
+            container = container,
+            initialDate = entry.dateArg(),
+            onBack = { navController.popBackStack() },
+            onAddMeal = { type, date -> navController.navigate(Routes.nutritionAdd(type, date)) },
+            onExplore = { navController.navigate(Routes.NutritionExplore) }
         )
     }
     composable(Routes.NutritionAdded, arguments = listOf(optionalDateArg)) { entry ->
