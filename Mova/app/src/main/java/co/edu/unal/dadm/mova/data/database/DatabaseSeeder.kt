@@ -1,3 +1,6 @@
 package co.edu.unal.dadm.mova.data.database
 
-// TODO: RoomDatabase.Callback que siembra datos desde assets/seed/*.json
+import android.content.Context
+import androidx.room.RoomDatabase
+
+class DatabaseSeeder(private val context: Context) : RoomDatabase.Callback()
