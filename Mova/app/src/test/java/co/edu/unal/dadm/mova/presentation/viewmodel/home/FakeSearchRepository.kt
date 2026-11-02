@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeSearchRepository(private val items: List<Searchable>) : SearchRepository, SearchFallbacks {
     var failing = false
+    var failSuggestionsOnce = false
     val queries = mutableListOf<Pair<String, Set<SearchResult.Type>>>()
 
     override fun search(query: String, types: Set<SearchResult.Type>): Flow<List<SearchResult>> = flow {
@@ -19,8 +20,13 @@ class FakeSearchRepository(private val items: List<Searchable>) : SearchReposito
         emit(SearchScorer.rank(query, items.filter { it.type in types }))
     }
 
-    override fun suggestions(prefix: String): Flow<List<String>> =
-        flowOf(items.map { it.title }.filter { SearchScorer.normalize(it).startsWith(SearchScorer.normalize(prefix)) }.sorted().take(6))
+    override fun suggestions(prefix: String): Flow<List<String>> {
+        if (failSuggestionsOnce) {
+            failSuggestionsOnce = false
+            return flow { throw IllegalStateException("boom") }
+        }
+        return flowOf(items.map { it.title }.filter { SearchScorer.normalize(it).startsWith(SearchScorer.normalize(prefix)) }.sorted().take(6))
+    }
 
     override fun firstItems(types: Set<SearchResult.Type>, limit: Int): Flow<List<SearchResult>> =
         flowOf(items.filter { it.type in types }.sortedBy { it.title }.take(limit).map { it.toResult(0) })

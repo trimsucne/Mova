@@ -50,6 +50,7 @@ class SearchViewModel(
     private val query = MutableStateFlow(initialQuery)
     private val filter = MutableStateFlow(SearchFilter.ALL)
     private val retries = MutableStateFlow(0)
+    private var addInFlight = false
 
     private val _state = MutableStateFlow(
         SearchUiState(
@@ -78,13 +79,13 @@ class SearchViewModel(
         }
         viewModelScope.launch {
             query.debounce(DEBOUNCE_MS)
-                .flatMapLatest { q -> if (isSearchable(q)) searchRepository.suggestions(q) else flowOf(emptyList()) }
-                .catch { emit(emptyList()) }
+                .flatMapLatest { q ->
+                    if (isSearchable(q)) searchRepository.suggestions(q).catch { emit(emptyList()) } else flowOf(emptyList())
+                }
                 .collect { suggestions -> _state.update { it.copy(suggestions = suggestions) } }
         }
         viewModelScope.launch {
-            filter.flatMapLatest { f -> fallbacks.firstItems(f.types, FALLBACK_COUNT) }
-                .catch { emit(emptyList()) }
+            filter.flatMapLatest { f -> fallbacks.firstItems(f.types, FALLBACK_COUNT).catch { emit(emptyList()) } }
                 .collect { items -> _state.update { it.copy(fallback = items) } }
         }
     }
@@ -142,15 +143,25 @@ class SearchViewModel(
     /** B8: porción base, hoy, primer tipo de suitableFor en el orden del enum. */
     private fun addMeal(result: SearchResult) {
         if (result.type != SearchResult.Type.MEAL) return
+        if (addInFlight) return
+        addInFlight = true
         viewModelScope.launch {
-            val meal = mealRepository.observeMeal(result.id).first() ?: return@launch
-            val mealType = meal.suitableFor.minOrNull() ?: MealType.SNACK
-            val entry = MealLog.fromMeal(meal, meal.servingGrams, currentUserId(), today(), mealType, clock())
-            when (val logged = logMeal(entry)) {
-                is Result.Success -> _state.update { it.copy(added = AddedMeal(logged.data, mealType)) }
-                is Result.Error -> _state.update { it.copy(error = logged.message) }
-                Result.Loading -> Unit
+            try {
+                logAdded(result)
+            } finally {
+                addInFlight = false
             }
+        }
+    }
+
+    private suspend fun logAdded(result: SearchResult) {
+        val meal = mealRepository.observeMeal(result.id).first() ?: return
+        val mealType = meal.suitableFor.minOrNull() ?: MealType.SNACK
+        val entry = MealLog.fromMeal(meal, meal.servingGrams, currentUserId(), today(), mealType, clock())
+        when (val logged = logMeal(entry)) {
+            is Result.Success -> _state.update { it.copy(added = AddedMeal(logged.data, mealType)) }
+            is Result.Error -> _state.update { it.copy(error = logged.message) }
+            Result.Loading -> Unit
         }
     }
 

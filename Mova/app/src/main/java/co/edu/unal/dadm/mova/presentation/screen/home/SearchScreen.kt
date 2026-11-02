@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.edu.unal.dadm.mova.core.di.SearchContainer
+import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.domain.model.SearchResult
 import co.edu.unal.dadm.mova.presentation.components.MovaTextField
 import co.edu.unal.dadm.mova.presentation.components.TopBarBack
@@ -66,7 +67,7 @@ fun SearchScreen(
 
     LaunchedEffect(state.added) {
         val added = state.added ?: return@LaunchedEffect
-        val result = snackbar.showSnackbar(message = "Añadido a ${added.mealType.label}", actionLabel = "Deshacer")
+        val result = snackbar.showSnackbar(message = "Añadido a ${spanishName(added.mealType)}", actionLabel = "Deshacer")
         viewModel.onEvent(if (result == SnackbarResult.ActionPerformed) SearchEvent.UndoAdd else SearchEvent.AddedShown)
     }
 
@@ -103,7 +104,7 @@ fun SearchScreen(
             }
 
             when (state.status) {
-                SearchStatus.IDLE -> RecentList(
+                SearchStatus.IDLE -> if (state.query.isBlank()) RecentList(
                     recent = state.recent,
                     onClick = { viewModel.onEvent(SearchEvent.RecentClicked(it)) },
                     onClear = { viewModel.onEvent(SearchEvent.ClearRecent) }
@@ -136,6 +137,13 @@ fun SearchScreen(
             }
         }
     }
+}
+
+private fun spanishName(type: MealType): String = when (type) {
+    MealType.BREAKFAST -> "Desayuno"
+    MealType.LUNCH -> "Almuerzo"
+    MealType.DINNER -> "Cena"
+    MealType.SNACK -> "Snack"
 }
 
 @Composable

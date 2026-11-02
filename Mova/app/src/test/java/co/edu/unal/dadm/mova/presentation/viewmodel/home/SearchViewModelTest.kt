@@ -129,6 +129,30 @@ class SearchViewModelTest {
     }
 
     @Test
+    fun `suggestions keep working after one failure`() = runTest(mainRule.dispatcher) {
+        search.failSuggestionsOnce = true
+        val vm = viewModel()
+        vm.onEvent(SearchEvent.QueryChanged("qu"))
+        advanceUntilIdle()
+        assertTrue(vm.state.value.suggestions.isEmpty())
+        vm.onEvent(SearchEvent.QueryChanged("tu"))
+        advanceUntilIdle()
+        assertEquals(listOf("Tuna Sandwich"), vm.state.value.suggestions)
+    }
+
+    @Test
+    fun `double AddMeal logs exactly one entry`() = runTest(mainRule.dispatcher) {
+        val vm = viewModel()
+        vm.onEvent(SearchEvent.QueryChanged("toast"))
+        advanceUntilIdle()
+        val result = vm.state.value.results.first()
+        vm.onEvent(SearchEvent.AddMeal(result))
+        vm.onEvent(SearchEvent.AddMeal(result))
+        advanceUntilIdle()
+        assertEquals(1, meals.logs.value.size)
+    }
+
+    @Test
     fun `recents are saved on submit and on open, and can be cleared`() = runTest(mainRule.dispatcher) {
         val vm = viewModel()
         vm.onEvent(SearchEvent.QueryChanged("toast"))
