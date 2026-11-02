@@ -23,6 +23,10 @@ object Routes {
     const val SettingsMainSecurity = "settings_main_security"
     const val Premium = "premium"
 
+    // Home (PR #5). Coinciden con las rutas de las pestañas de MovaBottomBar.
+    const val Notifications = "notifications"
+    const val UpliftScore = "uplift_score"
+
     // Nutrición (spec §6). date es ISO (2026-11-02) y opcional: por defecto, hoy.
     const val NutritionIntake = "nutrition/intake"
     const val NutritionMyMeals = "nutrition/my_meals?date={date}"

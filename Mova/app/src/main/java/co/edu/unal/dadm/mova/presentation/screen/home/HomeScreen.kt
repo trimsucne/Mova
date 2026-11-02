@@ -27,7 +27,9 @@ fun HomeScreenRoute(
     onNavigateToScore: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToTab: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToCalories: () -> Unit = {},
+    onNavigateToMeals: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val viewModel: HomeViewModel = viewModel(
@@ -50,9 +52,9 @@ fun HomeScreenRoute(
         onProfileClick = onNavigateToProfile,
         onCategoryScoreClick = onNavigateToScore,
         onCategoryHydrationClick = {},
-        onCategoryCalorieClick = {},
+        onCategoryCalorieClick = onNavigateToCalories,
         onWorkoutClick = { _ -> },
-        onSeeAllMealsClick = {},
+        onSeeAllMealsClick = onNavigateToMeals,
         onAskCoachClick = {},
         onNavigateTab = onNavigateToTab,
         modifier = modifier
