@@ -38,6 +38,10 @@ object Routes {
         "nutrition/add" + query("type" to type?.name, "date" to date)
     fun nutritionAdded(date: LocalDate) = "nutrition/added?date=$date"
 
+    // Búsqueda (spec §5). Home navega con Routes.search(texto).
+    const val Search = "search?q={q}"
+    fun search(query: String? = null) = "search" + query("q" to query?.let { android.net.Uri.encode(it) })
+
     private fun query(vararg params: Pair<String, Any?>): String =
         params.filter { it.second != null }
             .joinToString("&") { "${it.first}=${it.second}" }

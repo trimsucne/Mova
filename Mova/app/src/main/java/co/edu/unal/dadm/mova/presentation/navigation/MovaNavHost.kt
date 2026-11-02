@@ -188,5 +188,6 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
             )
         }
         nutritionGraph(navController, nutritionContainer)
+        searchGraph(navController)
     }
 }
