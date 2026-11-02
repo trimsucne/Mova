@@ -7,6 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import co.edu.unal.dadm.mova.core.di.NutritionContainer
+import co.edu.unal.dadm.mova.domain.model.MealType
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.AddMealScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.FoodAddedScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MealDetailScreen
 import java.time.LocalDate
@@ -36,6 +38,25 @@ fun NavGraphBuilder.nutritionGraph(navController: NavController, container: Nutr
                 popUpTo(Routes.NutritionAdded) { inclusive = true }
             }
         })
+    }
+    composable(
+        Routes.NutritionAdd,
+        arguments = listOf(
+            navArgument("type") { type = NavType.StringType; nullable = true; defaultValue = null },
+            optionalDateArg
+        )
+    ) { entry ->
+        AddMealScreen(
+            container = container,
+            date = entry.dateArg(),
+            initialType = entry.arguments?.getString("type")?.let { runCatching { MealType.valueOf(it) }.getOrNull() },
+            onBack = { navController.popBackStack() },
+            onAdded = { date ->
+                navController.navigate(Routes.nutritionAdded(date)) {
+                    popUpTo(Routes.NutritionAdd) { inclusive = true }
+                }
+            }
+        )
     }
 }
 
