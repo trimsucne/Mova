@@ -72,7 +72,9 @@ fun MealDetailScreen(
                 MovaTextField(
                     value = gramsText,
                     onValueChange = { text ->
-                        gramsText = text.filter(Char::isDigit)
+                        gramsText = text.filter(Char::isDigit).take(4).let { digits ->
+                            if ((digits.toIntOrNull() ?: 0) > MealDetailViewModel.MAX_GRAMS) MealDetailViewModel.MAX_GRAMS.toString() else digits
+                        }
                         gramsText.toIntOrNull()?.takeIf { it > 0 }?.let { viewModel.onEvent(MealDetailEvent.GramsChanged(it)) }
                     },
                     label = "Portion (g)",

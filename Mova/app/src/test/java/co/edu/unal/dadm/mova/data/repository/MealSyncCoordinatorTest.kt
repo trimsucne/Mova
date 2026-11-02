@@ -58,7 +58,7 @@ class MealSyncCoordinatorTest {
 
     @Test
     fun `keeps processing session changes when a step throws`() = runTest {
-        remote.docs["r9"] = TestMeals.log("r9", date).toEntity(SyncState.SYNCED)
+        remote.docs["r9"] = TestMeals.log("r9", date, userId = "u2").toEntity(SyncState.SYNCED)
         val failingDao = object : MealLogDao by dao {
             override suspend fun deleteSyncedForUser(userId: String) = throw IllegalStateException("db down")
         }
@@ -71,6 +71,7 @@ class MealSyncCoordinatorTest {
             advanceUntilIdle()
             userIds.value = null // onSignOut -> deleteSyncedForUser lanza
             advanceUntilIdle()
+            assertNull(dao.getById("r9")) // solo u2 es dueño de r9
             userIds.value = "u2"
             advanceUntilIdle()
             assertEquals("SYNCED", dao.getById("r9")!!.syncState)

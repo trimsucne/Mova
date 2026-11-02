@@ -83,7 +83,7 @@ class MealDetailViewModel(
         return copy(meal = meal, grams = grams, macros = macros, kcal = macros.kcal)
     }
 
-    private companion object {
+    companion object {
         const val MIN_GRAMS = 1
         const val MAX_GRAMS = 2000
     }
