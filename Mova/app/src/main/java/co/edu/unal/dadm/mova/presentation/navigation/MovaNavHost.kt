@@ -1,10 +1,12 @@
 package co.edu.unal.dadm.mova.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import co.edu.unal.dadm.mova.core.di.NutritionContainer
 import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
 import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
 import co.edu.unal.dadm.mova.domain.repository.AssessmentRepository
@@ -36,6 +38,7 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
     val context = LocalContext.current
     val profileRepository = ProfileRepositoryImpl(context)
     val preferencesRepository = UserPreferencesImpl(context)
+    val nutritionContainer = remember { NutritionContainer.get(context) }
     NavHost(navController = navController, startDestination = Routes.Welcome) {
         composable(Routes.Welcome) {
             WelcomeScreen(
@@ -184,5 +187,6 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
                 onBack = { navController.popBackStack() }
             )
         }
+        nutritionGraph(navController, nutritionContainer)
     }
 }
