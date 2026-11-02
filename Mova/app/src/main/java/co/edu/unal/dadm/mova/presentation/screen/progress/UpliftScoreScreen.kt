@@ -28,8 +28,9 @@ fun UpliftScoreScreenRoute(
     onNavigateTab: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel: UpliftScoreViewModel = viewModel(
-        factory = UpliftScoreViewModel.Factory(userId)
+        factory = UpliftScoreViewModel.Factory(context, userId)
     )
     val uiState by viewModel.uiState.collectAsState()
 
