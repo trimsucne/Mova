@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import co.edu.unal.dadm.mova.core.di.RepositoryModule
 import co.edu.unal.dadm.mova.domain.model.ActivityLog
+import co.edu.unal.dadm.mova.domain.model.DailyIntake
 import co.edu.unal.dadm.mova.domain.model.MealLog
 import co.edu.unal.dadm.mova.domain.model.Notification
 import co.edu.unal.dadm.mova.domain.model.ScoreSnapshot
@@ -17,15 +18,20 @@ import co.edu.unal.dadm.mova.domain.repository.NotificationRepository
 import co.edu.unal.dadm.mova.domain.repository.ProfileRepository
 import co.edu.unal.dadm.mova.domain.repository.ProgressRepository
 import co.edu.unal.dadm.mova.domain.repository.WorkoutRepository
+import co.edu.unal.dadm.mova.domain.usecase.ObserveDailyIntakeUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class HomeViewModel(
     private val profileRepository: ProfileRepository,
     private val mealRepository: MealRepository,
+    private val observeDailyIntake: ObserveDailyIntakeUseCase,
     private val hydrationRepository: HydrationRepository,
     private val progressRepository: ProgressRepository,
     private val workoutRepository: WorkoutRepository,
@@ -44,10 +50,12 @@ class HomeViewModel(
 
     private fun loadHomeData() {
         viewModelScope.launch {
+            val today = LocalDate.now()
             combine(
-                profileRepository.observe(userId),
-                mealRepository.observeTodayLogs(userId),
-                mealRepository.getCalorieGoal(userId),
+                // Sin perfil (sin red o aún sin llegar) Home se muestra igual con el nombre por defecto.
+                profileRepository.observe(userId).onStart { emit(null) }.catch { emit(null) },
+                mealRepository.observeLogs(userId, today),
+                observeDailyIntake(today),
                 hydrationRepository.observeTodayWater(userId),
                 hydrationRepository.getWaterGoal(userId),
                 progressRepository.observeLatestScore(userId),
@@ -59,7 +67,7 @@ class HomeViewModel(
                 val profile = args[0] as? UserProfile
                 @Suppress("UNCHECKED_CAST")
                 val meals = (args[1] as? List<MealLog>).orEmpty()
-                val calorieGoal = args[2] as? Int ?: 2200
+                val intake = args[2] as? DailyIntake
                 val waterCurrent = args[3] as? Int ?: 1750
                 val waterGoal = args[4] as? Int ?: 2500
                 val scoreSnapshot = args[5] as? ScoreSnapshot
@@ -71,9 +79,10 @@ class HomeViewModel(
                 val notifications = (args[8] as? List<Notification>).orEmpty()
                 val query = args[9] as? String ?: ""
 
-                val consumed = meals.sumOf { it.calories }
-                val targetCal = if (calorieGoal > 0) calorieGoal else 2200
-                val remaining = (targetCal - consumed).coerceAtLeast(0)
+                // Consumido, meta y restante salen de Nutrición (ObserveDailyIntakeUseCase).
+                val consumed = intake?.consumedKcal ?: meals.sumOf { it.kcal }
+                val targetCal = intake?.goalKcal?.takeIf { it > 0 } ?: 2200
+                val remaining = (intake?.remainingKcal ?: (targetCal - consumed)).coerceAtLeast(0)
                 val unreadCount = notifications.count { !it.isRead }
 
                 HomeUiState(
@@ -115,7 +124,8 @@ class HomeViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return HomeViewModel(
                 profileRepository = RepositoryModule.profileRepository(context),
-                mealRepository = RepositoryModule.mealRepository,
+                mealRepository = RepositoryModule.mealRepository(context),
+                observeDailyIntake = RepositoryModule.observeDailyIntake(context),
                 hydrationRepository = RepositoryModule.hydrationRepository,
                 progressRepository = RepositoryModule.progressRepository,
                 workoutRepository = RepositoryModule.workoutRepository,

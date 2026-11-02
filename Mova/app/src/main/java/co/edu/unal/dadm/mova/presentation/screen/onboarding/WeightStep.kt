@@ -41,7 +41,7 @@ fun WeightStep(
 
     AssessmentStep(
         stepIndex = 2,
-        totalSteps = 6,
+        totalSteps = 9,
         title = "What's your current weight right now?",
         canContinue = weight in 25.0f..300.0f,
         onContinue = onContinue,

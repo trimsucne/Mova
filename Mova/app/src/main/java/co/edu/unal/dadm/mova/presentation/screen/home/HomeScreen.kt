@@ -27,7 +27,9 @@ fun HomeScreenRoute(
     onNavigateToScore: () -> Unit,
     onNavigateToProfile: () -> Unit,
     onNavigateToTab: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToCalories: () -> Unit = {},
+    onNavigateToMeals: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val viewModel: HomeViewModel = viewModel(
@@ -39,20 +41,18 @@ fun HomeScreenRoute(
         uiState = uiState,
         onSearchQueryChange = { query ->
             viewModel.onEvent(HomeEvent.SearchQueryChanged(query))
-            if (query.length >= 2) {
-                onNavigateToSearch(query)
-            }
         },
         onSearchSubmitted = { query ->
+            viewModel.onEvent(HomeEvent.SearchQueryChanged(""))
             onNavigateToSearch(query)
         },
         onNotificationsClick = onNavigateToNotifications,
         onProfileClick = onNavigateToProfile,
         onCategoryScoreClick = onNavigateToScore,
         onCategoryHydrationClick = {},
-        onCategoryCalorieClick = {},
+        onCategoryCalorieClick = onNavigateToCalories,
         onWorkoutClick = { _ -> },
-        onSeeAllMealsClick = {},
+        onSeeAllMealsClick = onNavigateToMeals,
         onAskCoachClick = {},
         onNavigateTab = onNavigateToTab,
         modifier = modifier

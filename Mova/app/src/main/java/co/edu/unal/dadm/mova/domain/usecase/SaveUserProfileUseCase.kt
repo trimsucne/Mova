@@ -12,6 +12,7 @@ class SaveUserProfileUseCase(private val repository: ProfileRepository) {
                 "avatarId" to profile.avatarId,
                 "age" to profile.age,
                 "weightKg" to profile.weightKg,
+                "heightCm" to profile.heightCm,
                 "onboardingCompleted" to true
             )
         )

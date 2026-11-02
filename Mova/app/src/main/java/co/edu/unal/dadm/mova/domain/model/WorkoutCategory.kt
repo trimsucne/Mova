@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio WorkoutCategory (data class / enum, Kotlin puro)
+/**
+ * Categoría de entrenamiento (spec Búsqueda §12).
+ * Temporary fake until the Workout module is implemented: valores mínimos, el módulo de Entrenamiento
+ * puede ampliarlos.
+ */
+enum class WorkoutCategory { STRENGTH, CARDIO, HIIT, YOGA, MOBILITY }

@@ -43,6 +43,7 @@ fun PersonalInfoScreen(
     var locationText by remember(profile) { mutableStateOf(profile?.location?.ifBlank { "Tokyo, Japan" } ?: "Tokyo, Japan") }
     var age by remember(profile) { mutableStateOf((profile?.age ?: 17).toString()) }
     var weight by remember(profile) { mutableStateOf("${(profile?.weightKg ?: 68.0).toInt()} kg") }
+    var height by remember(profile) { mutableStateOf(profile?.heightCm?.let { "$it cm" } ?: "") }
 
     Column(
         modifier = modifier
@@ -65,6 +66,7 @@ fun PersonalInfoScreen(
             MovaTextField(value = locationText, onValueChange = { locationText = it }, label = "Location", leadingIconText = "📍")
             MovaTextField(value = age, onValueChange = { age = it }, label = "Age", leadingIconText = "🎂")
             MovaTextField(value = weight, onValueChange = { weight = it }, label = "Current Weight", leadingIconText = "⚖️")
+            MovaTextField(value = height, onValueChange = { height = it }, label = "Height", leadingIconText = "📏", placeholder = "170 cm")
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -73,7 +75,8 @@ fun PersonalInfoScreen(
                 onClick = {
                     val parsedAge = age.toIntOrNull()
                     val parsedWeight = weight.replace("[^0-9.]".toRegex(), "").toDoubleOrNull()
-                    profileViewModel.updatePersonalInfo(name, email, locationText, parsedAge, parsedWeight)
+                    val parsedHeight = height.replace("[^0-9]".toRegex(), "").toIntOrNull()?.takeIf { it in 100..250 }
+                    profileViewModel.updatePersonalInfo(name, email, locationText, parsedAge, parsedWeight, parsedHeight)
                     onBack()
                 },
                 containerColor = MaterialTheme.colorScheme.secondary,

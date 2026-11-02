@@ -61,32 +61,38 @@ fun AssessmentScreen(
                 onContinue = { step++ },
                 onBack = { step-- }
             )
-            2 -> FitnessLevelStep(
+            2 -> HeightStep(
+                heightCm = state.draft.heightCm,
+                onHeightChanged = { viewModel.onEvent(OnboardingEvent.SetHeight(it)) },
+                onContinue = { step++ },
+                onBack = { step-- }
+            )
+            3 -> FitnessLevelStep(
                 selected = state.draft.fitnessLevel,
                 onSelected = { viewModel.onEvent(OnboardingEvent.SetFitnessLevel(it)) },
                 onContinue = { step++ },
                 onBack = { step-- }
             )
-            3 -> GenderStep(
+            4 -> GenderStep(
                 selected = state.draft.gender,
                 onSelected = { viewModel.onEvent(OnboardingEvent.SetGender(it)) },
                 onContinue = { step++ },
                 onBack = { step-- }
             )
-            4 -> VoiceStep(
+            5 -> VoiceStep(
                 onContinue = {
                     viewModel.onEvent(OnboardingEvent.SetVoiceNote(null))
                     step++
                 },
                 onBack = { step-- }
             )
-            5 -> GoalStep(
+            6 -> GoalStep(
                 selected = state.draft.goal,
                 onSelected = { viewModel.onEvent(OnboardingEvent.SetGoal(it)) },
                 onContinue = { step++ },
                 onBack = { step-- }
             )
-            6 -> AvatarStep(
+            7 -> AvatarStep(
                 selected = state.draft.avatarId,
                 onSelected = { viewModel.onEvent(OnboardingEvent.SetAvatar(it)) },
                 onContinue = { step++ },

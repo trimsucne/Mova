@@ -1,3 +1,10 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.nutrition
 
-// TODO: sealed interface de eventos de usuario: Detalle nutricional (iPhone 13 mini - 12)
+import co.edu.unal.dadm.mova.domain.model.MealType
+
+sealed interface MealDetailEvent {
+    data class GramsChanged(val grams: Int) : MealDetailEvent
+    data class MealTypeChanged(val mealType: MealType) : MealDetailEvent
+    data object AddMeal : MealDetailEvent
+    data object ErrorShown : MealDetailEvent
+}

@@ -8,6 +8,7 @@ import co.edu.unal.dadm.mova.domain.model.Goal
 sealed interface OnboardingEvent {
     data class SetAge(val age: Int) : OnboardingEvent
     data class SetWeight(val weightKg: Double) : OnboardingEvent
+    data class SetHeight(val heightCm: Int) : OnboardingEvent
     data class SetDiet(val diet: Diet) : OnboardingEvent
     data class SetGender(val gender: Gender) : OnboardingEvent
     data class SetFitnessLevel(val level: FitnessLevel) : OnboardingEvent

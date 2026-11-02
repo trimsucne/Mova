@@ -88,20 +88,20 @@ fun DietCard(
                             }
                             Column {
                                 Text(
-                                    text = meal.mealName,
+                                    text = meal.name,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = MovaColor.TextBlack
                                 )
                                 Text(
-                                    text = "P: ${meal.proteinGrams.toInt()}g • C: ${meal.carbsGrams.toInt()}g • F: ${meal.fatGrams.toInt()}g",
+                                    text = "P: ${meal.macros.proteinG.toInt()}g • C: ${meal.macros.carbsG.toInt()}g • F: ${meal.macros.fatG.toInt()}g",
                                     fontSize = 12.sp,
                                     color = MovaColor.TextSecondary
                                 )
                             }
                         }
                         Text(
-                            text = "${meal.calories} kcal",
+                            text = "${meal.kcal} kcal",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = MovaColor.TextBlack

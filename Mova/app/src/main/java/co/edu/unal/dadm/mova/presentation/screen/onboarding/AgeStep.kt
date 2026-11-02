@@ -21,7 +21,7 @@ fun AgeStep(
 
     AssessmentStep(
         stepIndex = 1,
-        totalSteps = 6,
+        totalSteps = 9,
         title = "What's your Age?",
         canContinue = currentAge in 13..120,
         onContinue = onContinue,

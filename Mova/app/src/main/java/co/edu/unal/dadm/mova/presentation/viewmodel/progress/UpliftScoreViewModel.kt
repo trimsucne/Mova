@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class UpliftScoreViewModel(
     private val progressRepository: ProgressRepository,
@@ -28,13 +29,13 @@ class UpliftScoreViewModel(
 
     private fun loadData() {
         viewModelScope.launch {
-            val now = System.currentTimeMillis()
-            val weekStart = now - (7L * 24 * 60 * 60 * 1000)
+            val today = LocalDate.now()
+            val weekStart = today.minusDays(6)
 
             combine(
                 progressRepository.observeLatestScore(userId),
                 progressRepository.observeWeeklyScores(userId),
-                mealRepository.observeLogs(userId, weekStart, now)
+                mealRepository.observeLogs(userId, weekStart, today)
             ) { latest, weeklyList, mealLogs ->
                 val bars = if (weeklyList.isNotEmpty()) {
                     weeklyList.map { snapshot ->
@@ -81,12 +82,15 @@ class UpliftScoreViewModel(
         }
     }
 
-    class Factory(private val userId: String) : ViewModelProvider.Factory {
+    class Factory(
+        private val context: android.content.Context,
+        private val userId: String
+    ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return UpliftScoreViewModel(
                 progressRepository = RepositoryModule.progressRepository,
-                mealRepository = RepositoryModule.mealRepository,
+                mealRepository = RepositoryModule.mealRepository(context),
                 userId = userId
             ) as T
         }

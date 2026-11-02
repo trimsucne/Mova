@@ -28,8 +28,8 @@ fun VoiceStep(
     onBack: (() -> Unit)? = null
 ) {
     AssessmentStep(
-        stepIndex = 5,
-        totalSteps = 6,
+        stepIndex = 6,
+        totalSteps = 9,
         title = "AI Vocal Analysis",
         description = "Your voice is connected to your health. Say the following for better assessment. 🙌",
         canContinue = true,
