@@ -1,81 +1,138 @@
 package co.edu.unal.dadm.mova.presentation.charts
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.edu.unal.dadm.mova.presentation.theme.MovaColor
-
-data class WeeklyBarData(
-    val dayLabel: String,
-    val score: Int,
-    val isHighlighted: Boolean = false
-)
+import co.edu.unal.dadm.mova.presentation.theme.MovaInk
 
 @Composable
 fun BarChartWeekly(
-    weeklyData: List<WeeklyBarData>,
+    score: Int = 95,
+    selectedDayIndex: Int = 1,
+    weeklyScores: List<Int> = listOf(75, 95, 84, 70, 77, 88, 75),
     modifier: Modifier = Modifier
 ) {
-    val maxScore = (weeklyData.maxOfOrNull { it.score } ?: 100).coerceAtLeast(100)
+    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .semantics {
-                contentDescription = "Weekly progress bar chart from Monday to Sunday"
-            },
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(vertical = 8.dp)
     ) {
-        Canvas(
+        // Y-axis grid lines + chart bars overlay
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(140.dp)
         ) {
-            val barCount = weeklyData.size.coerceAtLeast(1)
-            val availableWidth = size.width
-            val barWidth = (availableWidth / barCount) * 0.45f
-            val spacing = (availableWidth - (barWidth * barCount)) / (barCount + 1)
-            val maxBarHeight = size.height - 20f
+            // Background horizontal grid lines (60, 70, 80, 90, 100)
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                listOf(100, 90, 80, 70, 60).forEach { level ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = level.toString(),
+                            fontSize = 10.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.width(28.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(1.dp)
+                                .background(Color(0xFFE5E5EA))
+                        )
+                    }
+                }
+            }
 
-            weeklyData.forEachIndexed { index, item ->
-                val x = spacing + index * (barWidth + spacing)
-                val barHeight = (item.score.toFloat() / maxScore.toFloat()) * maxBarHeight
-                val y = size.height - barHeight
+            // Bars row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(start = 28.dp, bottom = 4.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                weeklyScores.forEachIndexed { index, value ->
+                    val isSelected = index == selectedDayIndex
+                    val barHeightFraction = ((value - 50).toFloat() / 50f).coerceIn(0.15f, 1.0f)
 
-                val barColor = if (item.isHighlighted) MovaColor.PrimaryOrange else MovaColor.CardBorder
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom,
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        if (isSelected) {
+                            // Score badge popup box above selected bar
+                            Box(
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(MovaInk)
+                                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = score.toString(),
+                                    color = Color.White,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
 
-                drawRoundRect(
-                    color = barColor,
-                    topLeft = Offset(x, y),
-                    size = Size(barWidth, barHeight),
-                    cornerRadius = CornerRadius(8f, 8f)
-                )
+                        Box(
+                            modifier = Modifier
+                                .width(12.dp)
+                                .fillMaxHeight(barHeightFraction)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(if (isSelected) MovaInk else Color(0xFFD1D1D6))
+                        )
+                    }
+                }
             }
         }
 
+        // X-axis Day Labels
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 28.dp, top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            weeklyData.forEach { item ->
+            days.forEachIndexed { index, day ->
+                val isSelected = index == selectedDayIndex
                 Text(
-                    text = item.dayLabel,
-                    fontSize = 12.sp,
-                    fontWeight = if (item.isHighlighted) FontWeight.Bold else FontWeight.Normal,
-                    color = if (item.isHighlighted) MovaColor.PrimaryOrange else MovaColor.TextSecondary
+                    text = day,
+                    fontSize = 11.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (isSelected) MovaInk else Color.Gray
                 )
             }
         }
     }
 }
-

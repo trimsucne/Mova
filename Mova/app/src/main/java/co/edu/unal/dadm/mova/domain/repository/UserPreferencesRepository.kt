@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 data class UserPreferences(
     val darkMode: Boolean = false,
     val unitSystem: UnitSystem = UnitSystem.METRIC,
-    val notificationsEnabled: Boolean = true
+    val notificationsEnabled: Boolean = true,
+    val avatarPath: String? = null
 )
 
 interface UserPreferencesRepository {
@@ -14,4 +15,5 @@ interface UserPreferencesRepository {
     suspend fun setDarkMode(enabled: Boolean)
     suspend fun setUnitSystem(unitSystem: UnitSystem)
     suspend fun setNotificationsEnabled(enabled: Boolean)
+    suspend fun setAvatarPath(path: String)
 }
