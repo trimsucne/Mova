@@ -1,0 +1,44 @@
+package co.edu.unal.dadm.mova.presentation.viewmodel.nutrition
+
+import co.edu.unal.dadm.mova.domain.model.Macros
+import co.edu.unal.dadm.mova.testutil.FakeMealRepository
+import co.edu.unal.dadm.mova.testutil.MainDispatcherRule
+import co.edu.unal.dadm.mova.testutil.TestMeals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Rule
+import org.junit.Test
+import java.time.LocalDate
+
+class CalorieStatsViewModelTest {
+    @get:Rule val mainRule = MainDispatcherRule()
+
+    @Test
+    fun `share always sums 100`() {
+        // kcal: P 100, C 200, G 90 -> 25.6 %, 51.3 %, 23.1 %
+        val share = CalorieStatsViewModel.share(Macros(25.0, 50.0, 10.0))!!
+        assertEquals(26, share.proteinPct)
+        assertEquals(51, share.carbsPct)
+        assertEquals(23, share.fatPct)
+        assertEquals(100, share.proteinPct + share.carbsPct + share.fatPct)
+    }
+
+    @Test
+    fun `no data gives no share`() {
+        assertNull(CalorieStatsViewModel.share(Macros.ZERO))
+    }
+
+    @Test
+    fun `uses only the current month`() {
+        val today = LocalDate.of(2026, 11, 15)
+        val repo = FakeMealRepository().apply {
+            logs.value = listOf(
+                TestMeals.log("in", LocalDate.of(2026, 11, 1), protein = 25.0, carbs = 50.0, fat = 10.0),
+                TestMeals.log("out", LocalDate.of(2026, 10, 31), protein = 100.0, carbs = 0.0, fat = 0.0)
+            )
+        }
+        val state = CalorieStatsViewModel(today, repo) { "u1" }.state.value
+        assertEquals(390, state.totalKcal)
+        assertEquals(26, state.share!!.proteinPct)
+    }
+}

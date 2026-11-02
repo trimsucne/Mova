@@ -10,6 +10,7 @@ import co.edu.unal.dadm.mova.core.di.NutritionContainer
 import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.AddMealScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.CalorieIntakeScreen
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.CalorieStatsScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.FoodAddedScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MealDetailScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MealSuggestionScreen
@@ -24,6 +25,9 @@ fun NavGraphBuilder.nutritionGraph(navController: NavController, container: Nutr
             onBack = { navController.popBackStack() },
             onMeal = { mealId -> navController.navigate(Routes.nutritionMeal(mealId)) }
         )
+    }
+    composable(Routes.NutritionStats) {
+        CalorieStatsScreen(container = container, onBack = { navController.popBackStack() })
     }
     composable(Routes.NutritionIntake) {
         CalorieIntakeScreen(
