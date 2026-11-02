@@ -6,6 +6,7 @@ import co.edu.unal.dadm.mova.testutil.MainDispatcherRule
 import co.edu.unal.dadm.mova.testutil.TestMeals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
@@ -20,6 +21,17 @@ class CalorieStatsViewModelTest {
         assertEquals(26, share.proteinPct)
         assertEquals(51, share.carbsPct)
         assertEquals(23, share.fatPct)
+        assertEquals(100, share.proteinPct + share.carbsPct + share.fatPct)
+    }
+
+    @Test
+    fun `zero fat never goes negative`() {
+        // kcal: P 404, C 396, G 0 -> 50.5 %, 49.5 %, 0 %
+        val share = CalorieStatsViewModel.share(Macros(101.0, 99.0, 0.0))!!
+        assertTrue(share.proteinPct >= 0)
+        assertTrue(share.carbsPct >= 0)
+        assertTrue(share.fatPct >= 0)
+        assertEquals(0, share.fatPct)
         assertEquals(100, share.proteinPct + share.carbsPct + share.fatPct)
     }
 

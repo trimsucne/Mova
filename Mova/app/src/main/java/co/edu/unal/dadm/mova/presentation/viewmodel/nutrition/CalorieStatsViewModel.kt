@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import kotlin.math.roundToInt
+import kotlin.math.floor
 
 class CalorieStatsViewModel(
     today: LocalDate,
@@ -31,16 +31,26 @@ class CalorieStatsViewModel(
     }
 
     companion object {
-        /** Porcentaje de kcal de cada macro; la grasa absorbe el redondeo para que sumen 100. */
+        /**
+         * Porcentaje de kcal de cada macro con reparto por el método del resto mayor:
+         * se toma la parte entera de cada porcentaje y los puntos sobrantes van, uno a uno,
+         * a los macros con mayor fracción. Así siempre son enteros no negativos que suman 100.
+         */
         fun share(macros: Macros): MacroShare? {
-            val protein = macros.proteinG * 4
-            val carbs = macros.carbsG * 4
-            val fat = macros.fatG * 9
-            val total = protein + carbs + fat
+            val kcal = doubleArrayOf(macros.proteinG * 4, macros.carbsG * 4, macros.fatG * 9)
+            val total = kcal.sum()
             if (total <= 0.0) return null
-            val proteinPct = (protein / total * 100).roundToInt()
-            val carbsPct = (carbs / total * 100).roundToInt()
-            return MacroShare(proteinPct, carbsPct, 100 - proteinPct - carbsPct)
+            val exact = kcal.map { it / total * 100 }
+            val pcts = exact.map { floor(it).toInt() }.toIntArray()
+            var leftover = 100 - pcts.sum()
+            // sortedByDescending es estable: en empates gana el macro que aparece primero.
+            val order = exact.indices.sortedByDescending { exact[it] - pcts[it] }
+            for (i in order) {
+                if (leftover == 0) break
+                pcts[i]++
+                leftover--
+            }
+            return MacroShare(pcts[0], pcts[1], pcts[2])
         }
     }
 }
