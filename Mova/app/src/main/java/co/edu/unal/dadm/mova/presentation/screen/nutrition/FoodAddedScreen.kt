@@ -1,3 +1,15 @@
 package co.edu.unal.dadm.mova.presentation.screen.nutrition
 
-// TODO: Dialogo Food Added (CFA 2) (Route + Screen stateless, @Preview claro/oscuro)
+import androidx.compose.runtime.Composable
+import co.edu.unal.dadm.mova.presentation.components.SuccessDialog
+
+@Composable
+fun FoodAddedScreen(onBackToMyMeals: () -> Unit) {
+    SuccessDialog(
+        title = "Food Added!",
+        message = "Your meal was added to My Meals.",
+        buttonText = "Back to My Meals",
+        onButtonClick = onBackToMyMeals,
+        onClose = onBackToMyMeals
+    )
+}
