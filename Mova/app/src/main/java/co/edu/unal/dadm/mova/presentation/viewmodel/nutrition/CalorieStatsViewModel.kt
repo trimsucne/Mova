@@ -25,7 +25,7 @@ class CalorieStatsViewModel(
         viewModelScope.launch {
             mealRepository.observeLogs(currentUserId(), today.withDayOfMonth(1), today).collect { logs ->
                 val total = logs.fold(Macros.ZERO) { sum, log -> sum + log.macros }
-                _state.update { it.copy(share = share(total), totalKcal = logs.sumOf { log -> log.kcal }, isLoading = false) }
+                _state.update { it.copy(share = share(total), monthMacros = total, totalKcal = logs.sumOf { log -> log.kcal }, isLoading = false) }
             }
         }
     }
