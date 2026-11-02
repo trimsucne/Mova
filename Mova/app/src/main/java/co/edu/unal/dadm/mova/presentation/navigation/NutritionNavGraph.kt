@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import co.edu.unal.dadm.mova.core.di.NutritionContainer
 import co.edu.unal.dadm.mova.domain.model.MealType
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.AddMealScreen
+import co.edu.unal.dadm.mova.presentation.screen.nutrition.CalorieIntakeScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.FoodAddedScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MealDetailScreen
 import co.edu.unal.dadm.mova.presentation.screen.nutrition.MyMealsScreen
@@ -16,6 +17,16 @@ import java.time.LocalDate
 
 /** Destinos de Nutrición. Cada pantalla agrega aquí su composable (Tasks 12–17). */
 fun NavGraphBuilder.nutritionGraph(navController: NavController, container: NutritionContainer) {
+    composable(Routes.NutritionIntake) {
+        CalorieIntakeScreen(
+            container = container,
+            onBack = { navController.popBackStack() },
+            onMyMeals = { navController.navigate(Routes.nutritionMyMeals()) },
+            onAddMeal = { navController.navigate(Routes.nutritionAdd()) },
+            onExplore = { navController.navigate(Routes.NutritionExplore) },
+            onStats = { navController.navigate(Routes.NutritionStats) }
+        )
+    }
     composable(
         Routes.NutritionMeal,
         arguments = listOf(navArgument("mealId") { type = NavType.StringType }, optionalDateArg)
