@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -89,6 +92,8 @@ private fun CalorieIntakeContent(
         modifier = Modifier
             .fillMaxSize()
             .background(ScreenBg)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -157,12 +162,12 @@ private fun CalorieIntakeContent(
             }
         }
 
-        Box(Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth()) {
             val monthly = state.monthlyKcal
             if (monthly.isNotEmpty()) {
                 SmoothAreaChart(
                     values = monthly.map { it.toFloat() },
-                    modifier = Modifier.fillMaxWidth().height(300.dp).padding(start = 8.dp, end = 12.dp, bottom = 40.dp),
+                    modifier = Modifier.fillMaxWidth().height(300.dp).padding(start = 8.dp, end = 16.dp, bottom = 8.dp),
                     gradientFill = true,
                     gridLevels = 4,
                     highlightIndex = monthly.lastIndex,
@@ -174,7 +179,13 @@ private fun CalorieIntakeContent(
             if (intake != null) {
                 MacroCard(
                     consumed = intake.consumed,
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(horizontal = 20.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(constraints)
+                            val overlap = 70.dp.roundToPx().coerceAtMost(placeable.height)
+                            layout(placeable.width, placeable.height - overlap) { placeable.place(0, -overlap) }
+                        }
                 )
             }
         }

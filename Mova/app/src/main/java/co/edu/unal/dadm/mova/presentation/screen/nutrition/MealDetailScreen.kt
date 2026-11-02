@@ -31,6 +31,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -104,6 +106,7 @@ private fun MealDetailContent(
         modifier = Modifier
             .fillMaxSize()
             .background(ScreenBg)
+            .navigationBarsPadding()
             .verticalScroll(rememberScrollState())
     ) {
         DetailTopBar(onBack)
@@ -176,6 +179,7 @@ private fun DetailTopBar(onBack: () -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
             .background(Color.White)
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +65,7 @@ fun CalorieStatsScreen(container: NutritionContainer, onBack: () -> Unit) {
 private fun CalorieStatsContent(state: CalorieStatsUiState, today: LocalDate, onBack: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
+            modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -123,6 +125,7 @@ private fun CalorieStatsContent(state: CalorieStatsUiState, today: LocalDate, on
             style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .statusBarsPadding()
                 .padding(20.dp)
                 .background(MovaOrange, RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp, vertical = 4.dp)

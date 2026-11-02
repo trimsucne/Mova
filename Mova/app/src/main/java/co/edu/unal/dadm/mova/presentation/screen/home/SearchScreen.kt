@@ -34,6 +34,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -110,11 +112,11 @@ private fun SearchContent(
     onBack: () -> Unit,
     onOpenMeal: (String) -> Unit
 ) {
-    Scaffold(containerColor = ScreenBg, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
+    Scaffold(containerColor = ScreenBg, contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0), snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
             SearchHeader(state = state, onEvent = onEvent, onBack = onBack)
             Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
+                modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 val showSuggestions = state.suggestions.isNotEmpty() && state.suggestions.none { it.equals(state.query.trim(), ignoreCase = true) }
@@ -176,6 +178,7 @@ private fun SearchHeader(state: SearchUiState, onEvent: (SearchEvent) -> Unit, o
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp))
             .background(MovaOrange)
+            .statusBarsPadding()
             .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {

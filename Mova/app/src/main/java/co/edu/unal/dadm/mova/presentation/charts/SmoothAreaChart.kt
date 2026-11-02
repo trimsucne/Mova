@@ -49,7 +49,10 @@ fun SmoothAreaChart(
         val rawMax = series.max().coerceAtLeast(1f)
 
         val steps = (gridLevels - 1).coerceAtLeast(1)
-        val niceMax = if (styled) {
+        val noData = series.all { it <= 0f }
+        val niceMax = if (styled && noData) {
+            500f * steps
+        } else if (styled) {
             val unit = if (rawMax > 300f) 100f else 10f
             ceil(rawMax / steps / unit).coerceAtLeast(1f) * unit * steps
         } else rawMax
@@ -108,7 +111,7 @@ fun SmoothAreaChart(
             val padY = 6.dp.toPx()
             val w = text.size.width + padX * 2
             val h = text.size.height + padY * 2
-            val left = (point.x - w / 2).coerceIn(leftPad, size.width - w)
+            val left = (point.x - w / 2).coerceIn(0f, (size.width - w).coerceAtLeast(0f))
             val top = (point.y - h - 12.dp.toPx()).coerceAtLeast(0f)
             drawRoundRect(lineColor, Offset(left, top), Size(w, h), CornerRadius(10.dp.toPx()))
             drawText(text, topLeft = Offset(left + padX, top + padY))
