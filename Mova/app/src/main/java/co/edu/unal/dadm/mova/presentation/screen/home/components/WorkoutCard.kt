@@ -25,7 +25,8 @@ import co.edu.unal.dadm.mova.presentation.theme.MovaColor
 fun WorkoutCard(
     workouts: List<Workout>,
     onWorkoutClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onExploreClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -46,7 +47,8 @@ fun WorkoutCard(
                 text = "Explore",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
-                color = MovaColor.PrimaryOrange
+                color = MovaColor.PrimaryOrange,
+                modifier = Modifier.clickable(onClick = onExploreClick)
             )
         }
 

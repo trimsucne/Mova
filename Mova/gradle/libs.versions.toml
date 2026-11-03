@@ -15,9 +15,14 @@ playServicesAuth = "21.4.0"
 datastore = "1.1.7"
 kotlin = "2.4.0"
 composeBom = "2026.02.01"
-room = "2.8.5"
+mapsCompose = "6.4.1"
 ksp = "2.3.13"
+room = "2.8.5"
+healthConnect = "1.1.0"
+playServicesMaps = "19.0.0"
+playServicesLocation = "21.3.0"
 workManager = "2.12.0"
+orgJson = "20250107"
 desugarJdkLibs = "2.1.5"
 
 [libraries]
@@ -50,10 +55,17 @@ androidx-compose-material-icons-core = { group = "androidx.compose.material", na
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "workManager" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
+androidx-health-connect = { group = "androidx.health.connect", name = "connect-client", version.ref = "healthConnect" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

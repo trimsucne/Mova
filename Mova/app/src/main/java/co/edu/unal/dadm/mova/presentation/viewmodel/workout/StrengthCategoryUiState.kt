@@ -1,3 +1,11 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.workout
 
-// TODO: data class de estado inmutable: Categoria Strength + All Workouts (CFA 17)
+import co.edu.unal.dadm.mova.domain.model.Workout
+import co.edu.unal.dadm.mova.domain.model.WorkoutCategory
+
+data class StrengthCategoryUiState(
+    val loading: Boolean = true,
+    val category: WorkoutCategory = WorkoutCategory.STRENGTH,
+    val workouts: List<Workout> = emptyList(),
+    val error: String? = null
+)

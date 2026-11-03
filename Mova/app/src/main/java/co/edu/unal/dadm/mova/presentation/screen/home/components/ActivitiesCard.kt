@@ -1,6 +1,7 @@
 package co.edu.unal.dadm.mova.presentation.screen.home.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -21,12 +22,14 @@ import co.edu.unal.dadm.mova.presentation.theme.MovaColor
 @Composable
 fun ActivitiesCard(
     activities: List<ActivityLog>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = MovaColor.CardLightGray)
     ) {
         Column(

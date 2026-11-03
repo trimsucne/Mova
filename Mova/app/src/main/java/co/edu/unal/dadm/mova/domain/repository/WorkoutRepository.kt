@@ -1,13 +1,19 @@
 package co.edu.unal.dadm.mova.domain.repository
 
 import co.edu.unal.dadm.mova.domain.model.Workout
+import co.edu.unal.dadm.mova.domain.model.WorkoutCategory
+import co.edu.unal.dadm.mova.domain.model.WorkoutSessionLog
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
-/**
- * Catálogo de entrenamientos (lo usan Home y, más adelante, Búsqueda vía WorkoutSearchSource).
- *
- * Temporary fake until the Workout module is implemented: solo lo que usa PR #5.
- */
 interface WorkoutRepository {
-    fun observeWorkouts(): Flow<List<Workout>>
+    fun observeByCategory(category: WorkoutCategory): Flow<List<Workout>>
+    fun observeWorkout(id: String): Flow<Workout?>
+    fun observeSessions(): Flow<List<WorkoutSessionLog>>
+    fun observeSession(id: String): Flow<WorkoutSessionLog?>
+    suspend fun saveSession(log: WorkoutSessionLog)
+
+    /** Catalogo completo (lo usa Home y, mas adelante, Busqueda via WorkoutSearchSource). */
+    fun observeWorkouts(): Flow<List<Workout>> =
+        combine(WorkoutCategory.entries.map { observeByCategory(it) }) { lists -> lists.toList().flatten() }
 }

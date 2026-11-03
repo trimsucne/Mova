@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio WorkoutExercise (data class / enum, Kotlin puro)
+data class WorkoutExercise(
+    val id: String,
+    val name: String,
+    val sets: Int,
+    val reps: Int,
+    val restSeconds: Int = 30
+)

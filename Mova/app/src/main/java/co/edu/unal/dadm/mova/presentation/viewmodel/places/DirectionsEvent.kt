@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.places
 
-// TODO: sealed interface de eventos de usuario: Navegacion con mapa (Directions.png) - fase posterior
+sealed interface DirectionsEvent {
+    data class LocationUpdated(val lat: Double, val lng: Double) : DirectionsEvent
+    data object OpenExternalMaps : DirectionsEvent
+    data object CloseClicked : DirectionsEvent
+}

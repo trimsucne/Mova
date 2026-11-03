@@ -1,3 +1,17 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.activity
 
-// TODO: @HiltViewModel con StateFlow<AddActivityUiState> y onEvent(): Grid de tipos de actividad (iPhone 13 mini - 18)
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+class AddActivityViewModel : ViewModel() {
+    private val _state = MutableStateFlow(AddActivityUiState())
+    val state: StateFlow<AddActivityUiState> = _state.asStateFlow()
+
+    fun onEvent(event: AddActivityEvent) {
+        if (event is AddActivityEvent.TypeSelected) _state.update { it.copy(selected = event.type) }
+        // Continue / Back los resuelve la Route (navegacion)
+    }
+}

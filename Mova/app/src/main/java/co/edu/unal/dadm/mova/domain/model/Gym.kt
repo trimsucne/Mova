@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio Gym (data class / enum, Kotlin puro)
+data class Gym(
+    val id: String,
+    val name: String,
+    val address: String,
+    val lat: Double,
+    val lng: Double
+)

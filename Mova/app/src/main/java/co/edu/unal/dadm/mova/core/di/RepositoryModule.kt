@@ -1,11 +1,9 @@
 package co.edu.unal.dadm.mova.core.di
 
 import android.content.Context
-import co.edu.unal.dadm.mova.data.repository.fake.FakeActivityRepository
 import co.edu.unal.dadm.mova.data.repository.fake.FakeHydrationRepository
 import co.edu.unal.dadm.mova.data.repository.fake.FakeNotificationRepository
 import co.edu.unal.dadm.mova.data.repository.fake.FakeProgressRepository
-import co.edu.unal.dadm.mova.data.repository.fake.FakeWorkoutRepository
 import co.edu.unal.dadm.mova.domain.repository.ActivityRepository
 import co.edu.unal.dadm.mova.domain.repository.HydrationRepository
 import co.edu.unal.dadm.mova.domain.repository.MealRepository
@@ -18,7 +16,7 @@ import co.edu.unal.dadm.mova.domain.usecase.ObserveDailyIntakeUseCase
 /**
  * Ensamblado manual (sin Hilt) de los repositorios que usan Home, Notificaciones y Uplift Score.
  * Todo lo de comidas y perfil sale de [NutritionContainer] (una sola base de datos y un solo MealRepository).
- * Workout, Activity, Notifications, Progress y Hydration son fakes en memoria hasta que sus módulos existan;
+ * Notifications, Progress y Hydration son fakes en memoria hasta que sus módulos existan;
  * al implementarlos, solo se reemplaza la instancia aquí.
  */
 object RepositoryModule {
@@ -34,11 +32,11 @@ object RepositoryModule {
     /** Temporary fake until the Progress/Uplift module is implemented. */
     val progressRepository: ProgressRepository by lazy { FakeProgressRepository() }
 
-    /** Temporary fake until the Workout module is implemented. */
-    val workoutRepository: WorkoutRepository by lazy { FakeWorkoutRepository() }
+    /** Modulo Workouts (Dev C): catalogo y sesiones reales en Room. */
+    val workoutRepository: WorkoutRepository get() = FitnessContainer.workoutRepository
 
-    /** Temporary fake until the Activity module is implemented. */
-    val activityRepository: ActivityRepository by lazy { FakeActivityRepository() }
+    /** Modulo Actividades (Dev C): registros reales en Room. */
+    val activityRepository: ActivityRepository get() = FitnessContainer.activityRepository
 
     /** Temporary fake until the Notifications module is implemented. */
     val notificationRepository: NotificationRepository by lazy { FakeNotificationRepository() }
