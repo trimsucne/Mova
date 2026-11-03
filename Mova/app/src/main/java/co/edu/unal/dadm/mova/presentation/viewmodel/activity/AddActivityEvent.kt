@@ -1,3 +1,9 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.activity
 
-// TODO: sealed interface de eventos de usuario: Grid de tipos de actividad (iPhone 13 mini - 18)
+import co.edu.unal.dadm.mova.domain.model.ActivityType
+
+sealed interface AddActivityEvent {
+    data class TypeSelected(val type: ActivityType) : AddActivityEvent
+    data object ContinueClicked : AddActivityEvent
+    data object BackClicked : AddActivityEvent
+}

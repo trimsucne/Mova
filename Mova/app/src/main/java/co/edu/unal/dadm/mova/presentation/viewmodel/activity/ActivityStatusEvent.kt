@@ -1,3 +1,7 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.activity
 
-// TODO: sealed interface de eventos de usuario: Horas por actividad (iPhone 13 mini - 19)
+sealed interface ActivityStatusEvent {
+    data object AddClicked : ActivityStatusEvent
+    data class ActivityClicked(val logId: String) : ActivityStatusEvent
+    data object BackClicked : ActivityStatusEvent
+}

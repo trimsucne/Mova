@@ -1,3 +1,6 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.workout
 
-// TODO: sealed interface de eventos de usuario: Categoria Strength + All Workouts (CFA 17)
+sealed interface StrengthCategoryEvent {
+    data class WorkoutClicked(val workoutId: String) : StrengthCategoryEvent
+    data object BackClicked : StrengthCategoryEvent
+}

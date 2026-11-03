@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.domain.model
 
-// TODO: Modelo de dominio VitalSample (data class / enum, Kotlin puro)
+data class VitalSample(
+    val bpm: Int,
+    val systolic: Int,
+    val spo2: Int,
+    val timestamp: Long
+)

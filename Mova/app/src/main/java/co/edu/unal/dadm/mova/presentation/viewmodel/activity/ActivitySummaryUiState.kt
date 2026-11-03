@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.activity
 
-// TODO: data class de estado inmutable: Resumen Jogging Completed (iPhone 13 mini - 17)
+import co.edu.unal.dadm.mova.domain.model.ActivityLog
+
+data class ActivitySummaryUiState(
+    val loading: Boolean = true,
+    val log: ActivityLog? = null
+)

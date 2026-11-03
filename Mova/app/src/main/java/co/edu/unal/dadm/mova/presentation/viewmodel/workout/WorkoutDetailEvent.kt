@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.presentation.viewmodel.workout
 
-// TODO: sealed interface de eventos de usuario: Detalle de entrenamiento (02-Onboarding-1 (2))
+sealed interface WorkoutDetailEvent {
+    data object StartClicked : WorkoutDetailEvent
+    data object DetailsClicked : WorkoutDetailEvent
+    data object DetailsDismissed : WorkoutDetailEvent
+    data object BackClicked : WorkoutDetailEvent
+}

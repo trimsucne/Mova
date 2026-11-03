@@ -178,6 +178,7 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
         composable(Routes.SettingsMainSecurity) {
             MainSecurityScreen(onBack = { navController.popBackStack() })
         }
+        fitnessGraph(navController)
         composable(Routes.Premium) {
             PremiumScreen(
                 onPurchase = { },
