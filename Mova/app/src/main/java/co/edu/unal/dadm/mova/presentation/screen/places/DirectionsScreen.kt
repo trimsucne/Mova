@@ -62,7 +62,7 @@ import com.google.maps.android.compose.rememberMarkerState
 fun DirectionsRoute(gymId: String, onClose: () -> Unit) {
     val viewModel: DirectionsViewModel = viewModel(
         key = "directions_$gymId",
-        factory = viewModelFactory { initializer { DirectionsViewModel(gymId, FitnessContainer.placesRepository) } }
+        factory = viewModelFactory { initializer { DirectionsViewModel(gymId, FitnessContainer.placesRepository, FitnessContainer.directionsRepository) } }
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val userLocation = rememberUserLocation()
@@ -113,7 +113,13 @@ fun DirectionsScreen(state: DirectionsUiState, myLocationEnabled: Boolean, onEve
                     title = state.etaMinutes?.let { "Arrival ($it mins)" } ?: gym.name,
                     snippet = gym.name
                 )
-                if (origin != null) Polyline(points = listOf(origin, dest), color = MovaOrange, width = 12f)
+                if (state.route.size >= 2) {
+                    val points = remember(state.route) { state.route.map { LatLng(it.lat, it.lng) } }
+                    Polyline(points = points, color = MovaOrange, width = 12f)
+                } else if (origin != null) {
+                    // Sin ruta por calles (cargando o sin red): linea recta de referencia.
+                    Polyline(points = listOf(origin, dest), color = MovaOrange, width = 12f)
+                }
             }
         }
         Column(

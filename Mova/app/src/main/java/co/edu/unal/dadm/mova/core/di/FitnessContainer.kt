@@ -5,12 +5,14 @@ import androidx.room.Room
 import co.edu.unal.dadm.mova.core.health.AdaptiveHealthDataSource
 import co.edu.unal.dadm.mova.core.health.HealthDataSource
 import co.edu.unal.dadm.mova.data.database.FitnessDatabase
+import co.edu.unal.dadm.mova.data.remote.OsrmDirectionsRepository
 import co.edu.unal.dadm.mova.data.repository.ActivityRepositoryImpl
 import co.edu.unal.dadm.mova.data.repository.PlacesRepositoryImpl
 import co.edu.unal.dadm.mova.data.repository.WorkoutRepositoryImpl
 import co.edu.unal.dadm.mova.data.tracking.TrackingRepositoryImpl
 import co.edu.unal.dadm.mova.data.tracking.TrackingSession
 import co.edu.unal.dadm.mova.domain.repository.ActivityRepository
+import co.edu.unal.dadm.mova.domain.repository.DirectionsRepository
 import co.edu.unal.dadm.mova.domain.repository.PlacesRepository
 import co.edu.unal.dadm.mova.domain.repository.TrackingRepository
 import co.edu.unal.dadm.mova.domain.repository.WorkoutRepository
@@ -45,6 +47,7 @@ object FitnessContainer {
     }
     val activityRepository: ActivityRepository by lazy { ActivityRepositoryImpl(database.activityLogDao()) }
     val placesRepository: PlacesRepository by lazy { PlacesRepositoryImpl(database.gymDao()) }
+    val directionsRepository: DirectionsRepository by lazy { OsrmDirectionsRepository() }
     val healthDataSource: HealthDataSource by lazy { AdaptiveHealthDataSource(appContext) }
 
     val trackingSession: TrackingSession by lazy { TrackingSession() }

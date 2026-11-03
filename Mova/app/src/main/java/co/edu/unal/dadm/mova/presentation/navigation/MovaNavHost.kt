@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import co.edu.unal.dadm.mova.core.di.NutritionContainer
 import co.edu.unal.dadm.mova.data.preferences.UserPreferencesImpl
 import co.edu.unal.dadm.mova.data.repository.ProfileRepositoryImpl
+import co.edu.unal.dadm.mova.domain.model.WorkoutCategory
 import co.edu.unal.dadm.mova.domain.repository.AssessmentRepository
 import co.edu.unal.dadm.mova.domain.repository.AuthRepository
 import co.edu.unal.dadm.mova.presentation.screen.auth.ResetMethodScreen
@@ -117,7 +118,12 @@ fun MovaNavHost(authRepository: AuthRepository, assessmentRepository: Assessment
                 onNavigateToProfile = { navController.navigate(Routes.Profile) },
                 onNavigateToTab = onNavigateTab,
                 onNavigateToCalories = { navController.navigate(Routes.NutritionIntake) },
-                onNavigateToMeals = { navController.navigate(Routes.NutritionExplore) }
+                onNavigateToMeals = { navController.navigate(Routes.NutritionExplore) },
+                onNavigateToWorkout = { navController.navigate(FitnessRoutes.workoutDetail(it)) },
+                onNavigateToWorkouts = {
+                    navController.navigate(FitnessRoutes.workoutCategory(WorkoutCategory.STRENGTH.id))
+                },
+                onNavigateToActivities = { navController.navigate(FitnessRoutes.ActivityStatus) }
             )
         }
         composable(Routes.Notifications) {

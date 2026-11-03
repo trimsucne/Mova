@@ -29,7 +29,10 @@ fun HomeScreenRoute(
     onNavigateToTab: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavigateToCalories: () -> Unit = {},
-    onNavigateToMeals: () -> Unit = {}
+    onNavigateToMeals: () -> Unit = {},
+    onNavigateToWorkout: (String) -> Unit = {},
+    onNavigateToWorkouts: () -> Unit = {},
+    onNavigateToActivities: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val viewModel: HomeViewModel = viewModel(
@@ -51,7 +54,9 @@ fun HomeScreenRoute(
         onCategoryScoreClick = onNavigateToScore,
         onCategoryHydrationClick = {},
         onCategoryCalorieClick = onNavigateToCalories,
-        onWorkoutClick = { _ -> },
+        onWorkoutClick = onNavigateToWorkout,
+        onExploreWorkoutsClick = onNavigateToWorkouts,
+        onActivitiesClick = onNavigateToActivities,
         onSeeAllMealsClick = onNavigateToMeals,
         onAskCoachClick = {},
         onNavigateTab = onNavigateToTab,
@@ -73,7 +78,9 @@ fun HomeScreen(
     onSeeAllMealsClick: () -> Unit,
     onAskCoachClick: () -> Unit,
     onNavigateTab: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onExploreWorkoutsClick: () -> Unit = {},
+    onActivitiesClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -154,6 +161,7 @@ fun HomeScreen(
             WorkoutCard(
                 workouts = uiState.workouts,
                 onWorkoutClick = onWorkoutClick,
+                onExploreClick = onExploreWorkoutsClick,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -170,6 +178,7 @@ fun HomeScreen(
 
             ActivitiesCard(
                 activities = uiState.todayActivities,
+                onClick = onActivitiesClick,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
