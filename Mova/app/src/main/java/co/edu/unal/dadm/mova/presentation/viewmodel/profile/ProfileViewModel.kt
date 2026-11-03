@@ -60,7 +60,7 @@ class ProfileViewModel(
         }
     }
 
-    fun updatePersonalInfo(name: String, email: String, location: String, age: Int?, weightKg: Double?) {
+    fun updatePersonalInfo(name: String, email: String, location: String, age: Int?, weightKg: Double?, heightCm: Int? = null) {
         viewModelScope.launch {
             try {
                 val changes = mutableMapOf<String, Any?>()
@@ -69,6 +69,7 @@ class ProfileViewModel(
                 if (location.isNotBlank()) changes["location"] = location
                 if (age != null) changes["age"] = age
                 if (weightKg != null) changes["weightKg"] = weightKg
+                if (heightCm != null) changes["heightCm"] = heightCm
                 repository.update(userId, changes)
                 error.value = null
             } catch (_: Exception) {

@@ -5,7 +5,7 @@ import co.edu.unal.dadm.mova.domain.model.WorkoutCategory
 
 data class StrengthCategoryUiState(
     val loading: Boolean = true,
-    val category: WorkoutCategory = WorkoutCategory.Strength,
+    val category: WorkoutCategory = WorkoutCategory.STRENGTH,
     val workouts: List<Workout> = emptyList(),
     val error: String? = null
 )

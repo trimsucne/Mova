@@ -9,14 +9,14 @@ import co.edu.unal.dadm.mova.domain.model.WorkoutExercise
 
 fun WorkoutWithExercises.toDomain(): Workout = Workout(
     id = workout.id,
-    title = workout.title,
+    name = workout.title,
     category = WorkoutCategory.fromId(workout.category),
-    trainer = workout.trainer,
     durationMin = workout.durationMin,
-    kcal = workout.kcal,
+    imageRes = workout.imageKey,
+    caloriesBurned = workout.kcal,
+    trainer = workout.trainer,
     sets = workout.sets,
     reps = workout.reps,
-    imageKey = workout.imageKey,
     exercises = exercises.sortedBy { it.position }.map { it.toDomain() }
 )
 

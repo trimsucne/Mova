@@ -1,3 +1,8 @@
 package co.edu.unal.dadm.mova.domain.usecase
 
-// TODO: kcal = 4*protein + 4*carbs + 9*fat
+import co.edu.unal.dadm.mova.domain.model.Macros
+
+// kcal = 4P + 4C + 9G
+class CalculateKcalFromMacrosUseCase {
+    operator fun invoke(macros: Macros): Int = macros.kcal
+}

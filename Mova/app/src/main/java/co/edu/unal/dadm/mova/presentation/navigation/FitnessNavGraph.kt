@@ -26,7 +26,7 @@ private fun stringArg(name: String) = navArgument(name) { type = NavType.StringT
 fun NavGraphBuilder.fitnessGraph(navController: NavHostController) {
     composable(FitnessRoutes.Hub) {
         FitnessHubScreen(
-            onWorkouts = { navController.navigate(FitnessRoutes.workoutCategory(WorkoutCategory.Strength.id)) },
+            onWorkouts = { navController.navigate(FitnessRoutes.workoutCategory(WorkoutCategory.STRENGTH.id)) },
             onActivities = { navController.navigate(FitnessRoutes.ActivityStatus) },
             onHeartRate = { navController.navigate(FitnessRoutes.HeartRate) },
             onGyms = { navController.navigate(FitnessRoutes.NearbyGyms) },

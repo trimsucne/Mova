@@ -17,9 +17,9 @@ class FitnessUseCasesTest {
     @Test
     fun `observeWorkouts filtra por categoria`() = runTest {
         val repo = InMemoryWorkoutRepository()
-        val strength = ObserveWorkoutsUseCase(repo)(WorkoutCategory.Strength).first()
+        val strength = ObserveWorkoutsUseCase(repo)(WorkoutCategory.STRENGTH).first()
         assertTrue(strength.isNotEmpty())
-        assertTrue(strength.all { it.category == WorkoutCategory.Strength })
+        assertTrue(strength.all { it.category == WorkoutCategory.STRENGTH })
     }
 
     @Test

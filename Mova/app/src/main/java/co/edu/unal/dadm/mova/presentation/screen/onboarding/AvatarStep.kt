@@ -50,8 +50,8 @@ fun AvatarStep(
     }
 
     AssessmentStep(
-        stepIndex = 6,
-        totalSteps = 6,
+        stepIndex = 8,
+        totalSteps = 9,
         title = "Select your Avatar",
         description = "We have 23 custom premade avatars, or you can upload profile locally",
         canContinue = true,

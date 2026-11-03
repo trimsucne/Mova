@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 /** Implementacion en memoria; migrara a Room (ActivityLogDao) sin cambiar la interfaz. */
-class InMemoryActivityRepository : ActivityRepository {
-    private val logs = MutableStateFlow<List<ActivityLog>>(emptyList())
+class InMemoryActivityRepository(initial: List<ActivityLog> = emptyList()) : ActivityRepository {
+    private val logs = MutableStateFlow(initial)
 
     override fun observeAll(): Flow<List<ActivityLog>> =
         logs.map { list -> list.sortedByDescending { it.startedAt } }
